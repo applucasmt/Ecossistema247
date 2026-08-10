@@ -557,14 +557,14 @@
   <div class="header">
     <h1><i class="fas fa-calendar-alt"></i> Calendário · Chico Guarnieri</h1>
     <div class="header-actions">
-      <button class="btn btn-success" id="loadDataBtn"><i class="fas fa-sync"></i> Carregar Dados</button>
+      <button class="btn btn-success" id="loadDataBtn" style="display:none;"><i class="fas fa-sync"></i> Recarregar</button>
     </div>
   </div>
 
   <div class="status-bar">
     <div class="status-msg" id="statusMsg">
-      <i class="fas fa-info-circle"></i> 
-      <span>Clique em "Carregar Dados" para buscar do Google Sheets</span>
+      <i class="fas fa-spinner"></i> 
+      <span>Carregando dados do Google Sheets...</span>
     </div>
     <span style="font-size:0.8rem; color:#94a3b8;" id="lastUpdate"></span>
   </div>
@@ -578,8 +578,8 @@
   <div id="tab1" class="tab-content active">
     <div id="calendarContainer" class="calendar-grid">
       <div class="loading-state">
-        <i class="fas fa-calendar-plus"></i>
-        <p>Clique em "Carregar Dados" para buscar do Google Sheets</p>
+        <i class="fas fa-spinner"></i>
+        <p>Carregando calendário...</p>
       </div>
     </div>
   </div>
@@ -587,8 +587,8 @@
   <div id="tab2" class="tab-content">
     <div class="table-wrap" id="tseRulesContainer">
       <div class="loading-state">
-        <i class="fas fa-gavel"></i>
-        <p>Carregue os dados para ver as regras do TSE</p>
+        <i class="fas fa-spinner"></i>
+        <p>Carregando regras do TSE...</p>
       </div>
     </div>
   </div>
@@ -596,8 +596,8 @@
   <div id="tab3" class="tab-content">
     <div class="table-wrap" id="guideContainer">
       <div class="loading-state">
-        <i class="fas fa-book-open"></i>
-        <p>Carregue os dados para ver o guia de tom</p>
+        <i class="fas fa-spinner"></i>
+        <p>Carregando guia de tom...</p>
       </div>
     </div>
   </div>
@@ -637,8 +637,10 @@
     const modalBody = document.getElementById('modalBody');
     const statusMsg = document.getElementById('statusMsg');
     const lastUpdate = document.getElementById('lastUpdate');
+    const loadDataBtn = document.getElementById('loadDataBtn');
 
     let currentCalendarData = [];
+    let isLoading = false;
 
     // ===================== ABAS =====================
     const tabs = document.querySelectorAll('.tab');
@@ -725,7 +727,7 @@
     // ===================== RENDERIZAÇÃO =====================
     function renderCalendar(data) {
       if (!data || data.length === 0) {
-        calendarContainer.innerHTML = `<div class="empty-state"><i class="fas fa-calendar-plus"></i><p>Nenhum dado carregado. Clique em "Carregar Dados".</p></div>`;
+        calendarContainer.innerHTML = `<div class="empty-state"><i class="fas fa-calendar-plus"></i><p>Nenhum dado encontrado no calendário.</p></div>`;
         return;
       }
       
@@ -744,16 +746,20 @@
         const status = getDateStatus(dataStr);
         let statusClass = '';
         let statusLabel = '';
+        let statusIcon = '';
         
         if (status === 'passed') {
           statusClass = 'status-passed';
-          statusLabel = '🔴 Passado';
+          statusLabel = 'Passado';
+          statusIcon = '🔴';
         } else if (status === 'warning') {
           statusClass = 'status-warning';
-          statusLabel = '🟡 Em breve';
+          statusLabel = 'Em breve';
+          statusIcon = '🟡';
         } else {
           statusClass = 'status-future';
-          statusLabel = '🟢 Futuro';
+          statusLabel = 'Futuro';
+          statusIcon = '🟢';
         }
         
         html += `
@@ -768,7 +774,7 @@
               <span class="card-tema">${tema}</span>
             </div>
             <div style="font-size:0.7rem; color:#64748b; margin-top:4px;">
-              <span class="status-indicator ${status}"></span> ${statusLabel}
+              <span class="status-indicator ${status}"></span> ${statusIcon} ${statusLabel}
             </div>
             <div class="card-meta">
               <span><i class="far fa-file-alt"></i> ${formato}</span>
@@ -791,7 +797,7 @@
 
     function renderRules(data) {
       if (!data || data.length < 2) {
-        tseRulesContainer.innerHTML = `<div class="empty-state"><i class="fas fa-gavel"></i><p>Nenhuma regra carregada.</p></div>`;
+        tseRulesContainer.innerHTML = `<div class="empty-state"><i class="fas fa-gavel"></i><p>Nenhuma regra do TSE encontrada.</p></div>`;
         return;
       }
       let html = `<table><thead><tr>`;
@@ -809,7 +815,7 @@
 
     function renderGuide(data) {
       if (!data || data.length < 2) {
-        guideContainer.innerHTML = `<div class="empty-state"><i class="fas fa-book-open"></i><p>Nenhum guia carregado.</p></div>`;
+        guideContainer.innerHTML = `<div class="empty-state"><i class="fas fa-book-open"></i><p>Nenhum guia de tom encontrado.</p></div>`;
         return;
       }
       let html = `<table><thead><tr>`;
@@ -830,8 +836,9 @@
       renderCalendar(currentCalendarData);
       renderRules(rules);
       renderGuide(guide);
-      updateStatus('Dados carregados com sucesso!', 'success');
+      updateStatus('✅ Dados carregados com sucesso!', 'success');
       lastUpdate.textContent = 'Última atualização: ' + new Date().toLocaleString('pt-BR');
+      isLoading = false;
     }
 
     function updateStatus(msg, type = '') {
@@ -856,7 +863,10 @@
 
     // ===================== CARREGAR DO GOOGLE SHEETS =====================
     function loadFromGoogleSheets() {
-      updateStatus('Buscando dados do Google Sheets...', 'loading');
+      if (isLoading) return;
+      isLoading = true;
+      
+      updateStatus('🔄 Buscando dados do Google Sheets...', 'loading');
       
       fetch(SCRIPT_URL)
         .then(response => {
@@ -881,15 +891,27 @@
         .catch(error => {
           console.error('Erro:', error);
           updateStatus('❌ Erro ao carregar: ' + error.message, 'error');
+          isLoading = false;
         });
     }
 
-    // ===================== BOTÕES =====================
-    document.getElementById('loadDataBtn').addEventListener('click', loadFromGoogleSheets);
+    // ===================== BOTÃO RECARREGAR =====================
+    loadDataBtn.addEventListener('click', loadFromGoogleSheets);
+
+    // ===================== CARREGAMENTO AUTOMÁTICO =====================
+    // A página já inicia carregando os dados automaticamente
+    // O botão "Recarregar" fica oculto, mas pode ser usado se necessário
+    
+    // Inicia o carregamento automático
+    window.addEventListener('load', function() {
+      // Pequeno delay para garantir que tudo foi carregado
+      setTimeout(loadFromGoogleSheets, 500);
+    });
 
     // ===================== INICIALIZAÇÃO =====================
     console.log('✅ Calendário Chico Guarnieri carregado!');
     console.log('📌 URL do Google Apps Script:', SCRIPT_URL);
+    console.log('🔄 Carregando dados automaticamente...');
   })();
 </script>
 </body>
