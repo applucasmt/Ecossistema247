@@ -101,6 +101,34 @@
       background: #09663b;
       border-color: #09663b;
     }
+    .btn-danger {
+      background: #dc2626;
+      border-color: #dc2626;
+      color: white;
+    }
+    .btn-danger i {
+      color: white;
+    }
+    .btn-danger:hover {
+      background: #b91c1c;
+      border-color: #b91c1c;
+    }
+    .btn-warning {
+      background: #f59e0b;
+      border-color: #f59e0b;
+      color: white;
+    }
+    .btn-warning i {
+      color: white;
+    }
+    .btn-warning:hover {
+      background: #d97706;
+      border-color: #d97706;
+    }
+    .btn-outline {
+      background: transparent;
+      border-color: #d0d9e8;
+    }
     .status-bar {
       background: white;
       border-radius: 16px;
@@ -137,6 +165,16 @@
     }
     .status-msg.loading i {
       animation: spin 1s linear infinite;
+    }
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.9rem;
+      color: #1e293b;
+    }
+    .user-info i {
+      color: #1e4b6e;
     }
     @keyframes spin {
       0% { transform: rotate(0deg); }
@@ -190,7 +228,7 @@
     }
     .calendar-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 1.5rem;
     }
     .card-item {
@@ -200,7 +238,6 @@
       box-shadow: 0 6px 18px rgba(0,0,0,0.03);
       border: 1px solid #edf2f7;
       transition: 0.2s;
-      cursor: pointer;
       display: flex;
       flex-direction: column;
     }
@@ -209,7 +246,6 @@
       box-shadow: 0 12px 28px rgba(0,0,0,0.06);
       border-color: #cbdae9;
     }
-    /* Cores dos cards baseadas na data */
     .card-item.status-passed {
       background: #fef2f2;
       border-color: #fecaca;
@@ -225,7 +261,18 @@
       background: #fecaca;
       color: #991b1b;
     }
-    
+    .card-item.status-passed .card-meta span {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+    .card-item.status-passed .weekday {
+      background: #fecaca;
+      color: #991b1b;
+    }
+    .card-item.status-passed .card-tema {
+      background: #fecaca;
+      color: #991b1b;
+    }
     .card-item.status-warning {
       background: #fffbeb;
       border-color: #fde68a;
@@ -241,7 +288,18 @@
       background: #fde68a;
       color: #92400e;
     }
-    
+    .card-item.status-warning .card-meta span {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    .card-item.status-warning .weekday {
+      background: #fde68a;
+      color: #92400e;
+    }
+    .card-item.status-warning .card-tema {
+      background: #fde68a;
+      color: #92400e;
+    }
     .card-item.status-future {
       background: #f0fdf4;
       border-color: #86efac;
@@ -257,11 +315,27 @@
       background: #86efac;
       color: #166534;
     }
-    
+    .card-item.status-future .card-meta span {
+      background: #dcfce7;
+      color: #166534;
+    }
+    .card-item.status-future .weekday {
+      background: #86efac;
+      color: #166534;
+    }
+    .card-item.status-future .card-tema {
+      background: #86efac;
+      color: #166534;
+    }
+    .card-item.concluido {
+      border-left: 4px solid #0b7e4b;
+    }
+    .card-item.concluido .card-date {
+      color: #0b7e4b;
+    }
     .card-date {
       font-weight: 700;
       font-size: 1.25rem;
-      color: #0b2a4a;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -274,18 +348,6 @@
       background: #f1f5f9;
       padding: 0.2rem 0.7rem;
       border-radius: 30px;
-    }
-    .card-item.status-passed .weekday {
-      background: #fecaca;
-      color: #991b1b;
-    }
-    .card-item.status-warning .weekday {
-      background: #fde68a;
-      color: #92400e;
-    }
-    .card-item.status-future .weekday {
-      background: #86efac;
-      color: #166534;
     }
     .card-title {
       font-weight: 600;
@@ -315,18 +377,6 @@
       align-items: center;
       gap: 4px;
     }
-    .card-item.status-passed .card-meta span {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-    .card-item.status-warning .card-meta span {
-      background: #fef3c7;
-      color: #92400e;
-    }
-    .card-item.status-future .card-meta span {
-      background: #dcfce7;
-      color: #166534;
-    }
     .card-meta i {
       font-size: 0.7rem;
       color: #7e9bb8;
@@ -339,24 +389,40 @@
       align-self: flex-start;
       margin-top: 8px;
     }
-    .card-item.status-passed .card-tema {
-      background: #fecaca;
-      color: #991b1b;
-    }
-    .card-item.status-warning .card-tema {
-      background: #fde68a;
-      color: #92400e;
-    }
-    .card-item.status-future .card-tema {
-      background: #86efac;
-      color: #166534;
-    }
     .badge-fase {
       border-radius: 30px;
       padding: 0.15rem 0.8rem;
       font-size: 0.7rem;
       font-weight: 600;
       letter-spacing: 0.3px;
+    }
+    .card-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 10px;
+      flex-wrap: wrap;
+    }
+    .card-actions .btn {
+      flex: 1;
+      justify-content: center;
+      padding: 0.4rem 0.8rem;
+      font-size: 0.8rem;
+    }
+    .card-concluido {
+      font-size: 0.75rem;
+      color: #0b7e4b;
+      background: #dcfce7;
+      padding: 0.3rem 0.8rem;
+      border-radius: 30px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .card-concluido i {
+      color: #0b7e4b;
     }
     .modal-overlay {
       position: fixed;
@@ -448,10 +514,6 @@
       font-size: 0.9rem;
       flex: 1;
     }
-    .modal-row .value i {
-      color: #7e9bb8;
-      margin-right: 6px;
-    }
     .modal-tse {
       background: #f1f6fe;
       border-radius: 16px;
@@ -519,9 +581,6 @@
       margin-bottom: 0.8rem;
       animation: spin 1s linear infinite;
     }
-    .loading-state p {
-      font-size: 0.95rem;
-    }
     .status-indicator {
       display: inline-block;
       width: 10px;
@@ -537,6 +596,59 @@
     }
     .status-indicator.future {
       background: #16a34a;
+    }
+    /* Login Modal */
+    .login-modal .modal-card {
+      max-width: 420px;
+    }
+    .login-modal .form-group {
+      margin-bottom: 1rem;
+    }
+    .login-modal label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.85rem;
+      margin-bottom: 0.3rem;
+      color: #475569;
+    }
+    .login-modal input {
+      width: 100%;
+      padding: 0.7rem 1rem;
+      border: 1px solid #d0d9e8;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-family: 'Inter', sans-serif;
+      transition: 0.2s;
+    }
+    .login-modal input:focus {
+      outline: none;
+      border-color: #1e4b6e;
+      box-shadow: 0 0 0 3px rgba(30, 75, 110, 0.1);
+    }
+    .login-modal .btn {
+      width: 100%;
+      justify-content: center;
+      margin-top: 0.5rem;
+    }
+    .login-modal .modal-title {
+      font-size: 1.4rem;
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    .login-modal .toggle-form {
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #64748b;
+    }
+    .login-modal .toggle-form a {
+      color: #1e4b6e;
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .login-modal .toggle-form a:hover {
+      text-decoration: underline;
     }
     @media (max-width: 640px) {
       .header {
@@ -571,6 +683,12 @@
   <div class="header">
     <h1><i class="fas fa-calendar-alt"></i> Calendário · Chico Guarnieri</h1>
     <div class="header-actions">
+      <span id="userDisplay" style="display:none;" class="user-info">
+        <i class="fas fa-user-circle"></i>
+        <span id="userNameDisplay"></span>
+      </span>
+      <button class="btn btn-primary" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
+      <button class="btn btn-danger" id="logoutBtn" style="display:none;"><i class="fas fa-sign-out-alt"></i> Sair</button>
       <button class="btn btn-success" id="loadDataBtn" style="display:none;"><i class="fas fa-sync"></i> Recarregar</button>
     </div>
   </div>
@@ -616,7 +734,71 @@
     </div>
   </div>
 
-  <div class="modal-overlay" id="modalOverlay">
+  <!-- Login Modal -->
+  <div class="modal-overlay login-modal" id="loginModal">
+    <div class="modal-card">
+      <button class="modal-close" id="loginModalClose"><i class="fas fa-times"></i></button>
+      <div class="modal-title" id="loginModalTitle">🔐 Login</div>
+      <div id="loginForm">
+        <div class="form-group">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" placeholder="seu@email.com">
+        </div>
+        <div class="form-group">
+          <label for="loginSenha">Senha</label>
+          <input type="password" id="loginSenha" placeholder="••••••••">
+        </div>
+        <button class="btn btn-success" id="loginSubmitBtn"><i class="fas fa-sign-in-alt"></i> Entrar</button>
+        <div class="toggle-form">
+          Não tem conta? <a id="toggleCadastro">Cadastre-se</a>
+        </div>
+        <div id="loginMessage" style="margin-top:0.8rem; font-size:0.9rem; color:#dc2626; text-align:center;"></div>
+      </div>
+      <div id="cadastroForm" style="display:none;">
+        <div class="form-group">
+          <label for="cadastroNome">Nome completo</label>
+          <input type="text" id="cadastroNome" placeholder="Seu nome">
+        </div>
+        <div class="form-group">
+          <label for="cadastroEmail">Email</label>
+          <input type="email" id="cadastroEmail" placeholder="seu@email.com">
+        </div>
+        <div class="form-group">
+          <label for="cadastroSenha">Senha</label>
+          <input type="password" id="cadastroSenha" placeholder="••••••••">
+        </div>
+        <button class="btn btn-primary" id="cadastroSubmitBtn"><i class="fas fa-user-plus"></i> Cadastrar</button>
+        <div class="toggle-form">
+          Já tem conta? <a id="toggleLogin">Faça login</a>
+        </div>
+        <div id="cadastroMessage" style="margin-top:0.8rem; font-size:0.9rem; color:#dc2626; text-align:center;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Conclusão -->
+  <div class="modal-overlay" id="concluirModal">
+    <div class="modal-card">
+      <button class="modal-close" id="concluirModalClose"><i class="fas fa-times"></i></button>
+      <div class="modal-header">
+        <div class="modal-title">✅ Confirmar Conclusão</div>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:1rem; color:#1e293b; margin-bottom:0.5rem;">
+          Tem certeza que deseja marcar este item como <strong>concluído</strong>?
+        </p>
+        <p style="font-size:0.9rem; color:#64748b;" id="concluirDataInfo"></p>
+        <div style="display:flex; gap:12px; margin-top:1.5rem;">
+          <button class="btn btn-success" id="confirmarConcluir" style="flex:1;"><i class="fas fa-check"></i> Sim, concluir</button>
+          <button class="btn btn-outline" id="cancelarConcluir" style="flex:1;"><i class="fas fa-times"></i> Cancelar</button>
+        </div>
+        <div id="concluirMessage" style="margin-top:0.8rem; font-size:0.9rem; text-align:center;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Detalhes -->
+  <div class="modal-overlay" id="detalhesModal">
     <div class="modal-card" id="modalCard">
       <button class="modal-close" id="modalClose"><i class="fas fa-times"></i></button>
       <div class="modal-header">
@@ -633,28 +815,186 @@
   (function() {
     'use strict';
 
-    // ============================================================
-    // ⚙️ CONFIGURAÇÃO - URL DO Google Apps Script
-    // ============================================================
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwGsca_F4C3zuTph-C6GwJSh_WmjiLef8qF2-WcZ2lh8E5c9iIB1mnAKlQHc9Mtt1NTFA/exec';
 
-    // ===================== REFERÊNCIAS =====================
+    // Referências
     const calendarContainer = document.getElementById('calendarContainer');
     const tseRulesContainer = document.getElementById('tseRulesContainer');
     const guideContainer = document.getElementById('guideContainer');
-    const modalOverlay = document.getElementById('modalOverlay');
-    const modalClose = document.getElementById('modalClose');
-    const modalDate = document.getElementById('modalDate');
-    const modalWeekday = document.getElementById('modalWeekday');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalFase = document.getElementById('modalFase');
-    const modalBody = document.getElementById('modalBody');
     const statusMsg = document.getElementById('statusMsg');
     const lastUpdate = document.getElementById('lastUpdate');
+    const loginBtn = document.getElementById('loginBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const userDisplay = document.getElementById('userDisplay');
+    const userNameDisplay = document.getElementById('userNameDisplay');
     const loadDataBtn = document.getElementById('loadDataBtn');
 
+    // Modais
+    const loginModal = document.getElementById('loginModal');
+    const loginModalClose = document.getElementById('loginModalClose');
+    const detalhesModal = document.getElementById('detalhesModal');
+    const modalClose = document.getElementById('modalClose');
+    const concluirModal = document.getElementById('concluirModal');
+    const concluirModalClose = document.getElementById('concluirModalClose');
+
     let currentCalendarData = [];
+    let currentUser = null;
+    let currentConcluirIndex = -1;
     let isLoading = false;
+
+    // ===================== LOGIN =====================
+    function showLoginModal() {
+      loginModal.classList.add('open');
+      document.getElementById('loginForm').style.display = 'block';
+      document.getElementById('cadastroForm').style.display = 'none';
+      document.getElementById('loginModalTitle').textContent = '🔐 Login';
+      document.getElementById('loginMessage').textContent = '';
+      document.getElementById('cadastroMessage').textContent = '';
+    }
+
+    function closeLoginModal() {
+      loginModal.classList.remove('open');
+    }
+
+    loginBtn.addEventListener('click', showLoginModal);
+    loginModalClose.addEventListener('click', closeLoginModal);
+    loginModal.addEventListener('click', function(e) {
+      if (e.target === this) closeLoginModal();
+    });
+
+    document.getElementById('toggleCadastro').addEventListener('click', function() {
+      document.getElementById('loginForm').style.display = 'none';
+      document.getElementById('cadastroForm').style.display = 'block';
+      document.getElementById('loginModalTitle').textContent = '📝 Cadastro';
+      document.getElementById('loginMessage').textContent = '';
+      document.getElementById('cadastroMessage').textContent = '';
+    });
+
+    document.getElementById('toggleLogin').addEventListener('click', function() {
+      document.getElementById('loginForm').style.display = 'block';
+      document.getElementById('cadastroForm').style.display = 'none';
+      document.getElementById('loginModalTitle').textContent = '🔐 Login';
+      document.getElementById('loginMessage').textContent = '';
+      document.getElementById('cadastroMessage').textContent = '';
+    });
+
+    // Login submit
+    document.getElementById('loginSubmitBtn').addEventListener('click', function() {
+      const email = document.getElementById('loginEmail').value.trim();
+      const senha = document.getElementById('loginSenha').value.trim();
+      const msg = document.getElementById('loginMessage');
+
+      if (!email || !senha) {
+        msg.textContent = '⚠️ Preencha todos os campos';
+        msg.style.color = '#dc2626';
+        return;
+      }
+
+      msg.textContent = '🔄 Verificando...';
+      msg.style.color = '#64748b';
+
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'login',
+          email: email,
+          senha: senha
+        }),
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(r => r.json())
+      .then(result => {
+        if (result.success) {
+          currentUser = result.usuario;
+          updateUserUI();
+          closeLoginModal();
+          updateStatus('✅ Bem-vindo, ' + currentUser.nome + '!', 'success');
+          carregarDados();
+        } else {
+          msg.textContent = '❌ ' + (result.error || 'Email ou senha inválidos');
+          msg.style.color = '#dc2626';
+        }
+      })
+      .catch(err => {
+        msg.textContent = '❌ Erro ao conectar: ' + err.message;
+        msg.style.color = '#dc2626';
+      });
+    });
+
+    // Cadastro submit
+    document.getElementById('cadastroSubmitBtn').addEventListener('click', function() {
+      const nome = document.getElementById('cadastroNome').value.trim();
+      const email = document.getElementById('cadastroEmail').value.trim();
+      const senha = document.getElementById('cadastroSenha').value.trim();
+      const msg = document.getElementById('cadastroMessage');
+
+      if (!nome || !email || !senha) {
+        msg.textContent = '⚠️ Preencha todos os campos';
+        msg.style.color = '#dc2626';
+        return;
+      }
+
+      if (senha.length < 6) {
+        msg.textContent = '⚠️ A senha deve ter pelo menos 6 caracteres';
+        msg.style.color = '#dc2626';
+        return;
+      }
+
+      msg.textContent = '🔄 Cadastrando...';
+      msg.style.color = '#64748b';
+
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'cadastrar',
+          nome: nome,
+          email: email,
+          senha: senha
+        }),
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(r => r.json())
+      .then(result => {
+        if (result.success) {
+          msg.textContent = '✅ ' + result.message;
+          msg.style.color = '#0b7e4b';
+          setTimeout(() => {
+            document.getElementById('toggleLogin').click();
+            document.getElementById('loginEmail').value = email;
+            document.getElementById('loginSenha').value = senha;
+          }, 1000);
+        } else {
+          msg.textContent = '❌ ' + (result.error || 'Erro ao cadastrar');
+          msg.style.color = '#dc2626';
+        }
+      })
+      .catch(err => {
+        msg.textContent = '❌ Erro ao conectar: ' + err.message;
+        msg.style.color = '#dc2626';
+      });
+    });
+
+    // Logout
+    logoutBtn.addEventListener('click', function() {
+      currentUser = null;
+      updateUserUI();
+      updateStatus('👋 Você saiu do sistema', '');
+    });
+
+    function updateUserUI() {
+      if (currentUser) {
+        loginBtn.style.display = 'none';
+        logoutBtn.style.display = 'inline-flex';
+        userDisplay.style.display = 'inline-flex';
+        userNameDisplay.textContent = currentUser.nome;
+        loadDataBtn.style.display = 'inline-flex';
+      } else {
+        loginBtn.style.display = 'inline-flex';
+        logoutBtn.style.display = 'none';
+        userDisplay.style.display = 'none';
+        loadDataBtn.style.display = 'none';
+      }
+    }
 
     // ===================== ABAS =====================
     const tabs = document.querySelectorAll('.tab');
@@ -673,22 +1013,144 @@
       });
     });
 
-    // ===================== MODAL =====================
-    function closeModal() {
-      modalOverlay.classList.remove('open');
+    // ===================== MODAIS =====================
+    function closeDetalhesModal() {
+      detalhesModal.classList.remove('open');
     }
-    modalClose.addEventListener('click', closeModal);
-    modalOverlay.addEventListener('click', function(e) {
-      if (e.target === this) closeModal();
+    modalClose.addEventListener('click', closeDetalhesModal);
+    detalhesModal.addEventListener('click', function(e) {
+      if (e.target === this) closeDetalhesModal();
     });
 
-    function openModal(row) {
-      const [data, dia, fase, objetivo, tema, ideia, formato, nota] = row;
-      modalDate.textContent = data || '';
-      modalWeekday.textContent = dia || '';
-      modalTitle.textContent = objetivo || tema || 'Atividade';
-      modalFase.textContent = fase || '';
-      modalFase.style.display = fase ? 'inline-block' : 'none';
+    function closeConcluirModal() {
+      concluirModal.classList.remove('open');
+      currentConcluirIndex = -1;
+    }
+    concluirModalClose.addEventListener('click', closeConcluirModal);
+    concluirModal.addEventListener('click', function(e) {
+      if (e.target === this) closeConcluirModal();
+    });
+    document.getElementById('cancelarConcluir').addEventListener('click', closeConcluirModal);
+
+    // ===================== FUNÇÃO PARA CALCULAR STATUS =====================
+    function getDateStatus(dataStr) {
+      if (!dataStr) return 'future';
+      const partes = dataStr.split('/');
+      if (partes.length !== 3) return 'future';
+      const dia = parseInt(partes[0]);
+      const mes = parseInt(partes[1]) - 1;
+      const ano = parseInt(partes[2]);
+      const dataEvento = new Date(ano, mes, dia);
+      const hoje = new Date();
+      hoje.setHours(0, 0, 0, 0);
+      const diffDays = Math.ceil((dataEvento.getTime() - hoje.getTime()) / (1000 * 60 * 60 * 24));
+      if (diffDays < 0) return 'passed';
+      else if (diffDays <= 3) return 'warning';
+      else return 'future';
+    }
+
+    // ===================== RENDERIZAÇÃO =====================
+    function renderCalendar(data) {
+      if (!data || data.length === 0) {
+        calendarContainer.innerHTML = `<div class="empty-state"><i class="fas fa-calendar-plus"></i><p>Nenhum dado encontrado no calendário.</p></div>`;
+        return;
+      }
+
+      let html = '';
+      data.forEach((row, index) => {
+        const dataStr = row[0] || '';
+        const dia = row[1] || '';
+        const fase = row[2] || '';
+        const objetivo = row[3] || '';
+        const tema = row[4] || '';
+        const ideia = row[5] || '';
+        const formato = row[6] || '';
+        const nota = row[7] || '';
+        const concluidoPor = row[8] || '';
+        const dataConclusao = row[9] || '';
+        const titulo = objetivo || tema || 'Atividade';
+        const status = getDateStatus(dataStr);
+        let statusClass = '';
+        let statusLabel = '';
+        let statusIcon = '';
+        if (status === 'passed') { statusClass = 'status-passed'; statusLabel = 'Passado'; statusIcon = '🔴'; }
+        else if (status === 'warning') { statusClass = 'status-warning'; statusLabel = 'Em breve'; statusIcon = '🟡'; }
+        else { statusClass = 'status-future'; statusLabel = 'Futuro'; statusIcon = '🟢'; }
+
+        const isConcluido = concluidoPor && concluidoPor.length > 0;
+        const concluidoClass = isConcluido ? 'concluido' : '';
+
+        html += `
+          <div class="card-item ${statusClass} ${concluidoClass}" data-index="${index}">
+            <div class="card-date">
+              ${dataStr} 
+              <span class="weekday">${dia}</span>
+            </div>
+            <div class="card-title">${titulo}</div>
+            <div style="display:flex; gap: 6px; flex-wrap: wrap; margin: 6px 0 2px;">
+              <span class="badge-fase">${fase}</span>
+              <span class="card-tema">${tema}</span>
+            </div>
+            <div style="font-size:0.7rem; color:#64748b; margin-top:4px;">
+              <span class="status-indicator ${status}"></span> ${statusIcon} ${statusLabel}
+            </div>
+            ${isConcluido ? `<div class="card-concluido"><i class="fas fa-check-circle"></i> Concluído por: ${concluidoPor} ${dataConclusao ? '· ' + dataConclusao : ''}</div>` : ''}
+            <div class="card-meta">
+              <span><i class="far fa-file-alt"></i> ${formato}</span>
+              <span><i class="far fa-comment"></i> ${ideia.length > 60 ? ideia.substring(0,60)+'…' : ideia}</span>
+            </div>
+            <div class="card-actions">
+              <button class="btn btn-primary btn-detalhes" data-index="${index}"><i class="fas fa-eye"></i> Detalhes</button>
+              ${currentUser && !isConcluido ? `<button class="btn btn-success btn-concluir" data-index="${index}"><i class="fas fa-check"></i> Concluir</button>` : ''}
+            </div>
+          </div>
+        `;
+      });
+      calendarContainer.innerHTML = html;
+
+      // Eventos dos botões
+      document.querySelectorAll('.btn-detalhes').forEach(el => {
+        el.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const idx = parseInt(this.dataset.index);
+          if (!isNaN(idx) && currentCalendarData[idx]) {
+            openDetalhesModal(currentCalendarData[idx]);
+          }
+        });
+      });
+
+      document.querySelectorAll('.btn-concluir').forEach(el => {
+        el.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const idx = parseInt(this.dataset.index);
+          if (!isNaN(idx) && currentCalendarData[idx]) {
+            currentConcluirIndex = idx;
+            document.getElementById('concluirDataInfo').textContent = '📅 ' + currentCalendarData[idx][0] + ' - ' + currentCalendarData[idx][3];
+            concluirModal.classList.add('open');
+            document.getElementById('concluirMessage').textContent = '';
+          }
+        });
+      });
+
+      // Clique no card abre detalhes
+      document.querySelectorAll('.card-item').forEach(el => {
+        el.addEventListener('click', function() {
+          const idx = parseInt(this.dataset.index);
+          if (!isNaN(idx) && currentCalendarData[idx]) {
+            openDetalhesModal(currentCalendarData[idx]);
+          }
+        });
+      });
+    }
+
+    // ===================== DETALHES MODAL =====================
+    function openDetalhesModal(row) {
+      const [data, dia, fase, objetivo, tema, ideia, formato, nota, concluidoPor, dataConclusao] = row;
+      document.getElementById('modalDate').textContent = data || '';
+      document.getElementById('modalWeekday').textContent = dia || '';
+      document.getElementById('modalTitle').textContent = objetivo || tema || 'Atividade';
+      document.getElementById('modalFase').textContent = fase || '';
+      document.getElementById('modalFase').style.display = fase ? 'inline-block' : 'none';
 
       const fields = [
         { label: 'Objetivo', value: objetivo },
@@ -702,111 +1164,85 @@
           bodyHtml += `<div class="modal-row"><span class="label">${f.label}</span><span class="value">${f.value}</span></div>`;
         }
       });
+      if (concluidoPor) {
+        bodyHtml += `<div class="modal-row"><span class="label">✅ Concluído</span><span class="value">por ${concluidoPor} ${dataConclusao ? '· ' + dataConclusao : ''}</span></div>`;
+      }
       if (nota) {
         bodyHtml += `<div class="modal-tse"><strong><i class="fas fa-scale-balanced"></i> Nota TSE:</strong> ${nota}</div>`;
       }
-      modalBody.innerHTML = bodyHtml;
-      modalOverlay.classList.add('open');
+      document.getElementById('modalBody').innerHTML = bodyHtml;
+      detalhesModal.classList.add('open');
     }
 
-    // ===================== FUNÇÃO PARA CALCULAR STATUS DA DATA =====================
-    function getDateStatus(dataStr) {
-      if (!dataStr) return 'future';
-      
-      // Converte data no formato DD/MM/YYYY para Date
-      const partes = dataStr.split('/');
-      if (partes.length !== 3) return 'future';
-      
-      const dia = parseInt(partes[0]);
-      const mes = parseInt(partes[1]) - 1;
-      const ano = parseInt(partes[2]);
-      
-      const dataEvento = new Date(ano, mes, dia);
-      const hoje = new Date();
-      hoje.setHours(0, 0, 0, 0);
-      
-      // Calcula diferença em dias
-      const diffTime = dataEvento.getTime() - hoje.getTime();
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      
-      if (diffDays < 0) {
-        return 'passed'; // Data já passou
-      } else if (diffDays <= 3) {
-        return 'warning'; // Hoje ou até 3 dias
-      } else {
-        return 'future'; // Mais de 3 dias
-      }
-    }
+    // ===================== CONCLUIR =====================
+    document.getElementById('confirmarConcluir').addEventListener('click', function() {
+      if (currentConcluirIndex === -1 || !currentUser) return;
 
-    // ===================== RENDERIZAÇÃO =====================
-    function renderCalendar(data) {
-      if (!data || data.length === 0) {
-        calendarContainer.innerHTML = `<div class="empty-state"><i class="fas fa-calendar-plus"></i><p>Nenhum dado encontrado no calendário.</p></div>`;
-        return;
-      }
-      
-      let html = '';
-      data.forEach((row, index) => {
-        const dataStr = row[0] || '';
-        const dia = row[1] || '';
-        const fase = row[2] || '';
-        const objetivo = row[3] || '';
-        const tema = row[4] || '';
-        const ideia = row[5] || '';
-        const formato = row[6] || '';
-        const titulo = objetivo || tema || 'Atividade';
-        
-        // Determina a classe de status
-        const status = getDateStatus(dataStr);
-        let statusClass = '';
-        let statusLabel = '';
-        let statusIcon = '';
-        
-        if (status === 'passed') {
-          statusClass = 'status-passed';
-          statusLabel = 'Passado';
-          statusIcon = '🔴';
-        } else if (status === 'warning') {
-          statusClass = 'status-warning';
-          statusLabel = 'Em breve';
-          statusIcon = '🟡';
+      const row = currentCalendarData[currentConcluirIndex];
+      const data = row[0];
+      const msg = document.getElementById('concluirMessage');
+
+      msg.textContent = '🔄 Processando...';
+      msg.style.color = '#64748b';
+
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'concluir',
+          data: data,
+          email: currentUser.email,
+          nome: currentUser.nome
+        }),
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(r => r.json())
+      .then(result => {
+        if (result.success) {
+          msg.textContent = '✅ ' + result.message;
+          msg.style.color = '#0b7e4b';
+          setTimeout(() => {
+            closeConcluirModal();
+            carregarDados();
+          }, 1000);
         } else {
-          statusClass = 'status-future';
-          statusLabel = 'Futuro';
-          statusIcon = '🟢';
+          msg.textContent = '❌ ' + (result.error || 'Erro ao concluir');
+          msg.style.color = '#dc2626';
         }
-        
-        html += `
-          <div class="card-item ${statusClass}" data-index="${index}">
-            <div class="card-date">
-              ${dataStr} 
-              <span class="weekday">${dia}</span>
-            </div>
-            <div class="card-title">${titulo}</div>
-            <div style="display:flex; gap: 6px; flex-wrap: wrap; margin: 6px 0 2px;">
-              <span class="badge-fase">${fase}</span>
-              <span class="card-tema">${tema}</span>
-            </div>
-            <div style="font-size:0.7rem; color:#64748b; margin-top:4px;">
-              <span class="status-indicator ${status}"></span> ${statusIcon} ${statusLabel}
-            </div>
-            <div class="card-meta">
-              <span><i class="far fa-file-alt"></i> ${formato}</span>
-              <span><i class="far fa-comment"></i> ${ideia.length > 60 ? ideia.substring(0,60)+'…' : ideia}</span>
-            </div>
-          </div>
-        `;
+      })
+      .catch(err => {
+        msg.textContent = '❌ Erro ao conectar: ' + err.message;
+        msg.style.color = '#dc2626';
       });
-      calendarContainer.innerHTML = html;
+    });
 
-      document.querySelectorAll('.card-item').forEach(el => {
-        el.addEventListener('click', function() {
-          const idx = parseInt(this.dataset.index);
-          if (!isNaN(idx) && currentCalendarData[idx]) {
-            openModal(currentCalendarData[idx]);
-          }
+    // ===================== CARREGAR DADOS =====================
+    function carregarDados() {
+      if (isLoading) return;
+      isLoading = true;
+      updateStatus('🔄 Buscando dados do Google Sheets...', 'loading');
+
+      fetch(SCRIPT_URL)
+        .then(response => {
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          return response.json();
+        })
+        .then(result => {
+          if (!result.success) throw new Error(result.error || 'Erro ao buscar dados');
+          const { calendario, regras, guia } = result.data;
+          if (!calendario || calendario.length < 2) throw new Error('Dados do calendário vazios');
+          currentCalendarData = calendario.slice(1) || [];
+          renderCalendar(currentCalendarData);
+          renderRules(regras);
+          renderGuide(guia);
+          updateStatus('✅ Dados carregados com sucesso!', 'success');
+          lastUpdate.textContent = 'Última atualização: ' + new Date().toLocaleString('pt-BR');
+          isLoading = false;
+        })
+        .catch(error => {
+          console.error('Erro:', error);
+          updateStatus('❌ Erro ao carregar: ' + error.message, 'error');
+          isLoading = false;
         });
-      });
     }
 
     function renderRules(data) {
@@ -815,8 +1251,7 @@
         return;
       }
       let html = `<table><thead><tr>`;
-      const headers = data[0];
-      headers.forEach(h => html += `<th>${h}</th>`);
+      data[0].forEach(h => html += `<th>${h}</th>`);
       html += `</tr></thead><tbody>`;
       for (let i = 1; i < data.length; i++) {
         html += `<tr>`;
@@ -833,8 +1268,7 @@
         return;
       }
       let html = `<table><thead><tr>`;
-      const headers = data[0];
-      headers.forEach(h => html += `<th>${h}</th>`);
+      data[0].forEach(h => html += `<th>${h}</th>`);
       html += `</tr></thead><tbody>`;
       for (let i = 1; i < data.length; i++) {
         html += `<tr>`;
@@ -845,79 +1279,24 @@
       guideContainer.innerHTML = html;
     }
 
-    function loadFullData(cal, rules, guide) {
-      currentCalendarData = cal.slice(1) || [];
-      renderCalendar(currentCalendarData);
-      renderRules(rules);
-      renderGuide(guide);
-      updateStatus('✅ Dados carregados com sucesso!', 'success');
-      lastUpdate.textContent = 'Última atualização: ' + new Date().toLocaleString('pt-BR');
-      isLoading = false;
-    }
-
     function updateStatus(msg, type = '') {
       const icon = document.querySelector('.status-msg i');
       const text = document.querySelector('.status-msg span');
-      
-      if (type === 'success') {
-        statusMsg.className = 'status-msg success';
-        icon.className = 'fas fa-check-circle';
-      } else if (type === 'error') {
-        statusMsg.className = 'status-msg error';
-        icon.className = 'fas fa-exclamation-circle';
-      } else if (type === 'loading') {
-        statusMsg.className = 'status-msg loading';
-        icon.className = 'fas fa-spinner';
-      } else {
-        statusMsg.className = 'status-msg';
-        icon.className = 'fas fa-info-circle';
-      }
+      if (type === 'success') { statusMsg.className = 'status-msg success'; icon.className = 'fas fa-check-circle'; }
+      else if (type === 'error') { statusMsg.className = 'status-msg error'; icon.className = 'fas fa-exclamation-circle'; }
+      else if (type === 'loading') { statusMsg.className = 'status-msg loading'; icon.className = 'fas fa-spinner'; }
+      else { statusMsg.className = 'status-msg'; icon.className = 'fas fa-info-circle'; }
       text.textContent = msg;
     }
 
-    // ===================== CARREGAR DO GOOGLE SHEETS =====================
-    function loadFromGoogleSheets() {
-      if (isLoading) return;
-      isLoading = true;
-      
-      updateStatus('🔄 Buscando dados do Servidor...', 'loading');
-      
-      fetch(SCRIPT_URL)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-          }
-          return response.json();
-        })
-        .then(result => {
-          if (!result.success) {
-            throw new Error(result.error || 'Erro ao buscar dados');
-          }
-          
-          const { calendario, regras, guia } = result.data;
-          
-          if (!calendario || calendario.length < 2) {
-            throw new Error('Dados do calendário vazios ou inválidos');
-          }
-          
-          loadFullData(calendario, regras || [], guia || []);
-        })
-        .catch(error => {
-          console.error('Erro:', error);
-          updateStatus('❌ Erro ao carregar: ' + error.message, 'error');
-          isLoading = false;
-        });
-    }
-
-    // ===================== BOTÃO RECARREGAR =====================
-    loadDataBtn.addEventListener('click', loadFromGoogleSheets);
-
-    // ===================== CARREGAMENTO AUTOMÁTICO =====================
-    window.addEventListener('load', function() {
-      setTimeout(loadFromGoogleSheets, 500);
-    });
+    // ===================== BOTÕES =====================
+    loadDataBtn.addEventListener('click', carregarDados);
 
     // ===================== INICIALIZAÇÃO =====================
+    window.addEventListener('load', function() {
+      setTimeout(carregarDados, 500);
+    });
+
     console.log('✅ Calendário Chico Guarnieri carregado!');
     console.log('📌 URL do Google Apps Script:', SCRIPT_URL);
     console.log('🔄 Carregando dados automaticamente...');
