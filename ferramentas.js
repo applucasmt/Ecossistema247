@@ -13,7 +13,7 @@ const ferramentasGabinete = [
         icone: "fas fa-image",
         arquivo: "gerador.html",
         novaFuncao: false,
-        descricao: "Crie artes padronizadas para redes sociais rapidamente. Formatos otimizados para Feed e Stories."
+        descricao: "Crie artes padronizadas para notícias rapidamente. Formatos otimizados para Feed e Stories."
     },
     {
         id: "transcritor",
@@ -39,6 +39,6 @@ const ferramentasGabinete = [
         icone: "fas fa-video",
         arquivo: "calendario.html",
         novaFuncao: true,
-        descricao: "Calendário de publucações e orientações para campanha"
+        descricao: "Calendário de publicações e orientações para campanha"
     }
 ];
