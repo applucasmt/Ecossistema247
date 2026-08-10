@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendário de Conteúdo · Chico Guarnieri</title>
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f6f8fc;
+      color: #1e293b;
+      padding: 2rem 1.5rem;
+    }
+    .container {
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+    .header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    .header h1 {
+      font-weight: 700;
+      font-size: 1.8rem;
+      letter-spacing: -0.02em;
+      background: linear-gradient(145deg, #0b2a4a, #1e4b6e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .header h1 i {
+      -webkit-text-fill-color: #1e4b6e;
+      margin-right: 8px;
+    }
+    .upload-area {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: white;
+      border: 1px solid #d0d9e8;
+      padding: 0.6rem 1.2rem;
+      border-radius: 40px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      color: #1e293b;
+      transition: 0.2s;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+    .btn i {
+      color: #3b6a8f;
+    }
+    .btn:hover {
+      background: #eef2f7;
+      border-color: #a0b9d0;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.03);
+    }
+    .btn-primary {
+      background: #1e4b6e;
+      border-color: #1e4b6e;
+      color: white;
+    }
+    .btn-primary i {
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #143a55;
+      border-color: #143a55;
+    }
+    .btn-success {
+      background: #0b7e4b;
+      border-color: #0b7e4b;
+      color: white;
+    }
+    .btn-success i {
+      color: white;
+    }
+    .btn-success:hover {
+      background: #09663b;
+      border-color: #09663b;
+    }
+    .config-section {
+      background: white;
+      border-radius: 16px;
+      padding: 1.2rem 1.5rem;
+      margin-bottom: 2rem;
+      border: 1px solid #e2e8f0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+    }
+    .config-section label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #475569;
+    }
+    .config-section input {
+      flex: 1;
+      min-width: 300px;
+      padding: 0.5rem 1rem;
+      border: 1px solid #d0d9e8;
+      border-radius: 40px;
+      font-size: 0.9rem;
+      font-family: 'Inter', sans-serif;
+    }
+    .config-section input:focus {
+      outline: none;
+      border-color: #1e4b6e;
+      box-shadow: 0 0 0 3px rgba(30, 75, 110, 0.1);
+    }
+    .status {
+      font-size: 0.85rem;
+      color: #64748b;
+      padding: 0.3rem 0.8rem;
+      background: #f1f5f9;
+      border-radius: 30px;
+    }
+    .status.success {
+      background: #dcfce7;
+      color: #166534;
+    }
+    .status.error {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+    .tabs {
+      display: flex;
+      gap: 4px;
+      border-bottom: 2px solid #e2e8f0;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    .tab {
+      padding: 0.8rem 1.8rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border-radius: 30px 30px 0 0;
+      cursor: pointer;
+      background: transparent;
+      color: #64748b;
+      transition: 0.2s;
+      border: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tab i {
+      font-size: 1rem;
+    }
+    .tab:hover {
+      background: #eef2f7;
+      color: #1e293b;
+    }
+    .tab.active {
+      background: white;
+      color: #1e4b6e;
+      box-shadow: 0 -2px 8px rgba(0,0,0,0.02);
+      border-bottom: 3px solid #1e4b6e;
+    }
+    .tab-content {
+      display: none;
+      animation: fade 0.25s ease;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    @keyframes fade {
+      0% { opacity: 0.4; transform: translateY(6px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .card-item {
+      background: white;
+      border-radius: 20px;
+      padding: 1.2rem 1.2rem 1rem;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.03);
+      border: 1px solid #edf2f7;
+      transition: 0.2s;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+    }
+    .card-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.06);
+      border-color: #cbdae9;
+    }
+    .card-date {
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: #0b2a4a;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .card-date .weekday {
+      font-weight: 400;
+      font-size: 0.8rem;
+      color: #64748b;
+      background: #f1f5f9;
+      padding: 0.2rem 0.7rem;
+      border-radius: 30px;
+    }
+    .card-title {
+      font-weight: 600;
+      font-size: 1rem;
+      color: #1e293b;
+      margin-bottom: 4px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .card-meta {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px;
+      font-size: 0.75rem;
+      color: #64748b;
+      flex-wrap: wrap;
+      border-top: 1px dashed #e2e8f0;
+      padding-top: 10px;
+    }
+    .card-meta span {
+      background: #f8fafc;
+      padding: 0.2rem 0.6rem;
+      border-radius: 30px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .card-meta i {
+      font-size: 0.7rem;
+      color: #7e9bb8;
+    }
+    .card-tema {
+      background: #e9eff6;
+      border-radius: 30px;
+      padding: 0.2rem 0.9rem;
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: #1e4b6e;
+      align-self: flex-start;
+      margin-top: 8px;
+    }
+    .badge-fase {
+      background: #dbeafe;
+      color: #1e4b6e;
+      border-radius: 30px;
+      padding: 0.15rem 0.8rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.3);
+      backdrop-filter: blur(4px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      padding: 1rem;
+    }
+    .modal-overlay.open {
+      display: flex;
+    }
+    .modal-card {
+      background: white;
+      max-width: 680px;
+      width: 100%;
+      border-radius: 32px;
+      padding: 2rem 2rem 1.8rem;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.2);
+      position: relative;
+      animation: slideUp 0.2s ease;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    @keyframes slideUp {
+      0% { opacity: 0.6; transform: scale(0.96) translateY(20px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1.4rem;
+      background: #f1f5f9;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 40px;
+      font-size: 1.4rem;
+      cursor: pointer;
+      color: #475569;
+      transition: 0.2s;
+    }
+    .modal-close:hover {
+      background: #e2e8f0;
+    }
+    .modal-header {
+      margin-bottom: 1.2rem;
+    }
+    .modal-header .modal-date {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #0b2a4a;
+    }
+    .modal-header .modal-weekday {
+      font-weight: 400;
+      color: #64748b;
+      font-size: 0.9rem;
+      margin-left: 8px;
+    }
+    .modal-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin: 0.4rem 0 0.2rem;
+      color: #0b2a4a;
+      line-height: 1.2;
+    }
+    .modal-body {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+    .modal-row {
+      display: flex;
+      border-bottom: 1px solid #edf2f7;
+      padding-bottom: 0.5rem;
+      gap: 8px;
+    }
+    .modal-row .label {
+      font-weight: 600;
+      min-width: 110px;
+      color: #475569;
+      font-size: 0.85rem;
+    }
+    .modal-row .value {
+      color: #1e293b;
+      font-size: 0.9rem;
+      flex: 1;
+    }
+    .modal-row .value i {
+      color: #7e9bb8;
+      margin-right: 6px;
+    }
+    .modal-tse {
+      background: #f1f6fe;
+      border-radius: 16px;
+      padding: 0.8rem 1rem;
+      margin-top: 0.5rem;
+      border-left: 4px solid #1e4b6e;
+      font-size: 0.85rem;
+    }
+    .modal-tse strong {
+      color: #0b2a4a;
+    }
+    .table-wrap {
+      background: white;
+      border-radius: 24px;
+      border: 1px solid #e9eef3;
+      overflow-x: auto;
+      padding: 0.2rem 0 0.2rem 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    th {
+      background: #f8fafc;
+      text-align: left;
+      padding: 1rem 1.2rem;
+      font-weight: 600;
+      color: #1e293b;
+      border-bottom: 2px solid #e2e8f0;
+    }
+    td {
+      padding: 0.9rem 1.2rem;
+      border-bottom: 1px solid #edf2f7;
+      vertical-align: top;
+      color: #1e293b;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #64748b;
+      font-size: 0.95rem;
+    }
+    .empty-state i {
+      font-size: 2.5rem;
+      color: #cbdae9;
+      margin-bottom: 0.8rem;
+    }
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: #64748b;
+    }
+    .loading i {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @media (max-width: 640px) {
+      .header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.8rem;
+      }
+      .config-section input {
+        min-width: auto;
+      }
+      .calendar-grid {
+        grid-template-columns: 1fr;
+      }
+      .modal-card {
+        padding: 1.5rem;
+      }
+      .modal-row {
+        flex-direction: column;
+        gap: 0.2rem;
+      }
+      .modal-row .label {
+        min-width: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container" id="app">
+  <div class="header">
+    <h1><i class="fas fa-calendar-alt"></i> Calendário · Chico Guarnieri</h1>
+    <div class="upload-area">
+      <button class="btn btn-success" id="loadGoogleBtn"><i class="fab fa-google"></i> Carregar do Google Sheets</button>
+      <button class="btn btn-primary" id="loadSampleBtn"><i class="fas fa-database"></i> Carregar exemplo</button>
+    </div>
+  </div>
+
+  <!-- Configuração Google Sheets -->
+  <div class="config-section">
+    <label for="sheetUrl"><i class="fas fa-link"></i> URL da planilha:</label>
+    <input type="text" id="sheetUrl" placeholder="https://docs.google.com/spreadsheets/d/SEU_ID/edit" value="">
+    <button class="btn btn-success" id="fetchSheetBtn"><i class="fas fa-sync"></i> Buscar</button>
+    <span id="statusMsg" class="status">Aguardando...</span>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="tab1"><i class="fas fa-calendar-day"></i> Calendário</button>
+    <button class="tab" data-tab="tab2"><i class="fas fa-gavel"></i> Regras TSE</button>
+    <button class="tab" data-tab="tab3"><i class="fas fa-book-open"></i> Guia de tom</button>
+  </div>
+
+  <div id="tab1" class="tab-content active">
+    <div id="calendarContainer" class="calendar-grid">
+      <div class="loading"><i class="fas fa-spinner"></i><br>Carregando dados...</div>
+    </div>
+  </div>
+
+  <div id="tab2" class="tab-content">
+    <div class="table-wrap" id="tseRulesContainer">
+      <div class="loading"><i class="fas fa-spinner"></i><br>Carregando regras...</div>
+    </div>
+  </div>
+
+  <div id="tab3" class="tab-content">
+    <div class="table-wrap" id="guideContainer">
+      <div class="loading"><i class="fas fa-spinner"></i><br>Carregando guia...</div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-card" id="modalCard">
+      <button class="modal-close" id="modalClose"><i class="fas fa-times"></i></button>
+      <div class="modal-header">
+        <div><span class="modal-date" id="modalDate"></span><span class="modal-weekday" id="modalWeekday"></span></div>
+        <div class="modal-title" id="modalTitle"></div>
+        <span class="badge-fase" id="modalFase" style="display:inline-block; margin-top:6px;"></span>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // ===================== DADOS DE EXEMPLO =====================
+    const sampleData = {
+      calendario: [
+        ["Data","Dia da semana","Fase","Objetivo","Tema/Praça","Ideia de post","Formato sugerido","Nota TSE / observação"],
+        ["06/08/2026","Quinta","Diálogo (pré-campanha)","Trajetória pessoal","Reputação","Card com a frase de abertura: \"Sou daqui, conheço as dificuldades e nossa região precisa de um deputado.\" Sem pedir voto — foco em apresentar quem é Chico.","Feed (card)","Pré-campanha: permitido apresentar pré-candidatura, ideias e trajetória — vedado pedir voto ou fazer propaganda antecipada."],
+        ["07/08/2026","Sexta","Diálogo (pré-campanha)","Presença regional","Território","Foto de Chico em visita a um dos municípios do Médio-Norte, reforçando capilaridade e proximidade (sem menção a candidatura, só agenda de mandato).","Feed (foto)","Pré-campanha: permitido apresentar pré-candidatura, ideias e trajetória — vedado pedir voto ou fazer propaganda antecipada."],
+        ["08/08/2026","Sábado","Diálogo (pré-campanha)","Rotina do mandato","Bastidores","Stories mostrando um dia de agenda: reunião, visita a obra — humanizando o trabalho do deputado antes da campanha começar.","Stories","Pré-campanha: permitido apresentar pré-candidatura, ideias e trajetória — vedado pedir voto ou fazer propaganda antecipada."],
+        ["09/08/2026","Domingo","Diálogo (pré-campanha)","Números do mandato","Prestação de contas","Post com os números já entregues: exemplo R$1,2 mi em emendas destinadas a Barra do Bugres nos 100 primeiros dias e 200+ proposituras legislativas em menos de um ano.","Feed (card)","Pré-campanha: permitido apresentar pré-candidatura, ideias e trajetória — vedado pedir voto ou fazer propaganda antecipada."],
+        ["10/08/2026","Segunda","Diálogo (pré-campanha)","Origem e valores","Reputação","Vídeo curto contando a origem de Chico — engraxate, vendedor de picolé, mercearia — sem tom de vitimismo, como base do vocabulário \"quem é da região entende a região\".","Reels","Pré-campanha: permitido apresentar pré-candidatura, ideias e trajetória — vedado pedir voto ou fazer propaganda antecipada."],
+        ["16/08/2026","Domingo","Sensibilização","Sensibilização — conexão emocional e reputação","Lançamento","Vídeo de lançamento da campanha: Chico apresenta a frase-âncora \"Barra do Bugres vai voltar a ter presença, acompanhamento e cobrança até o fim\", primeira vez fixando número na legenda. Tom emocional, sem dado técnico ainda.","Reels + Feed","Propaganda eleitoral já permitida (a partir de 16/08). Evitar disparo em massa; impulsionamento pago só contratado formalmente pela campanha e identificado como tal."]
+      ],
+      regras: [
+        ["Data / período","Regra"],
+        ["01/01/2026","Início do registro obrigatório na Justiça Eleitoral de pesquisas de opinião pública divulgadas sobre o pleito."],
+        ["15/08/2026","Proibida a realização de enquetes relacionadas ao processo eleitoral — cabe poder de polícia contra a divulgação."],
+        ["16/08/2026","Início da propaganda eleitoral, inclusive na internet (Resolução TSE nº 23.610/2019, atualizada pelas Resoluções nº 23.732/2024 e 23.755/2026)."],
+        ["Todo o período eleitoral","Proibido o disparo em massa de mensagens de conteúdo político-eleitoral por aplicativos de mensagens e plataformas digitais."],
+        ["04/10/2026","1º turno das Eleições Gerais 2026. Votação das 8h às 17h, horário de Brasília. Deputados estaduais são eleitos em turno único."]
+      ],
+      guia: [
+        ["Item","Orientação"],
+        ["Arquétipo de marca","Fiscalizador — \"Barra do Bugres vai voltar a ter presença, acompanhamento e cobrança até o fim.\""],
+        ["Frase-chave de tom de voz","\"Sou daqui, conheço as dificuldades e nossa região precisa de um deputado.\""],
+        ["Traços do arquétipo","Defesa da região (bastidor em obras, reuniões, protocolos, ofícios) · Prestação de contas (números concretos, proposituras, prazos) · Proximidade física (perto das pessoas)."],
+        ["Vocabulário a usar","acompanhar, cobrar, fiscalizar, continuar, destinar, protocolar, monitorar, presença, região, entrega, prazo, ofício, emenda, articulação"],
+        ["Vocabulário a evitar","\"prometo resolver\", \"só eu posso\", \"vou dar um jeito\", \"nunca vi igual\" e superlativos vazios sem dado que sustente"]
+      ]
+    };
+
+    // ===================== REFERÊNCIAS =====================
+    const calendarContainer = document.getElementById('calendarContainer');
+    const tseRulesContainer = document.getElementById('tseRulesContainer');
+    const guideContainer = document.getElementById('guideContainer');
+    const modalOverlay = document.getElementById('modalOverlay');
+    const modalClose = document.getElementById('modalClose');
+    const modalDate = document.getElementById('modalDate');
+    const modalWeekday = document.getElementById('modalWeekday');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalFase = document.getElementById('modalFase');
+    const modalBody = document.getElementById('modalBody');
+    const statusMsg = document.getElementById('statusMsg');
+    const sheetUrlInput = document.getElementById('sheetUrl');
+    const fetchSheetBtn = document.getElementById('fetchSheetBtn');
+    const loadGoogleBtn = document.getElementById('loadGoogleBtn');
+
+    let currentCalendarData = [];
+
+    // ===================== ABAS =====================
+    const tabs = document.querySelectorAll('.tab');
+    const contents = {
+      tab1: document.getElementById('tab1'),
+      tab2: document.getElementById('tab2'),
+      tab3: document.getElementById('tab3')
+    };
+    tabs.forEach(tab => {
+      tab.addEventListener('click', function() {
+        tabs.forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        Object.keys(contents).forEach(key => {
+          contents[key].classList.toggle('active', key === this.dataset.tab);
+        });
+      });
+    });
+
+    // ===================== MODAL =====================
+    function closeModal() {
+      modalOverlay.classList.remove('open');
+    }
+    modalClose.addEventListener('click', closeModal);
+    modalOverlay.addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+
+    function openModal(row) {
+      const [data, dia, fase, objetivo, tema, ideia, formato, nota] = row;
+      modalDate.textContent = data || '';
+      modalWeekday.textContent = dia || '';
+      modalTitle.textContent = objetivo || tema || 'Atividade';
+      modalFase.textContent = fase || '';
+      modalFase.style.display = fase ? 'inline-block' : 'none';
+
+      const fields = [
+        { label: 'Objetivo', value: objetivo },
+        { label: 'Tema/Praça', value: tema },
+        { label: 'Ideia de post', value: ideia },
+        { label: 'Formato sugerido', value: formato }
+      ];
+      let bodyHtml = '';
+      fields.forEach(f => {
+        if (f.value) {
+          bodyHtml += `<div class="modal-row"><span class="label">${f.label}</span><span class="value">${f.value}</span></div>`;
+        }
+      });
+      if (nota) {
+        bodyHtml += `<div class="modal-tse"><strong><i class="fas fa-scale-balanced"></i> Nota TSE:</strong> ${nota}</div>`;
+      }
+      modalBody.innerHTML = bodyHtml;
+      modalOverlay.classList.add('open');
+    }
+
+    // ===================== RENDERIZAÇÃO =====================
+    function renderCalendar(data) {
+      if (!data || data.length === 0) {
+        calendarContainer.innerHTML = `<div class="empty-state"><i class="fas fa-calendar-plus"></i><p>Nenhum dado carregado. Importe um arquivo ou use o exemplo.</p></div>`;
+        return;
+      }
+      let html = '';
+      data.forEach((row, index) => {
+        const dataStr = row[0] || '';
+        const dia = row[1] || '';
+        const fase = row[2] || '';
+        const objetivo = row[3] || '';
+        const tema = row[4] || '';
+        const ideia = row[5] || '';
+        const formato = row[6] || '';
+        const nota = row[7] || '';
+        const titulo = objetivo || tema || 'Atividade';
+        html += `
+          <div class="card-item" data-index="${index}">
+            <div class="card-date">${dataStr} <span class="weekday">${dia}</span></div>
+            <div class="card-title">${titulo}</div>
+            <div style="display:flex; gap: 6px; flex-wrap: wrap; margin: 6px 0 2px;">
+              <span class="badge-fase">${fase}</span>
+              <span class="card-tema">${tema}</span>
+            </div>
+            <div class="card-meta">
+              <span><i class="far fa-file-alt"></i> ${formato}</span>
+              <span><i class="far fa-comment"></i> ${ideia.length > 60 ? ideia.substring(0,60)+'…' : ideia}</span>
+            </div>
+          </div>
+        `;
+      });
+      calendarContainer.innerHTML = html;
+
+      document.querySelectorAll('.card-item').forEach(el => {
+        el.addEventListener('click', function() {
+          const idx = parseInt(this.dataset.index);
+          if (!isNaN(idx) && currentCalendarData[idx]) {
+            openModal(currentCalendarData[idx]);
+          }
+        });
+      });
+    }
+
+    function renderRules(data) {
+      if (!data || data.length < 2) {
+        tseRulesContainer.innerHTML = `<div class="empty-state"><i class="fas fa-gavel"></i><p>Nenhuma regra carregada.</p></div>`;
+        return;
+      }
+      let html = `<table><thead><tr>`;
+      const headers = data[0];
+      headers.forEach(h => html += `<th>${h}</th>`);
+      html += `</tr></thead><tbody>`;
+      for (let i = 1; i < data.length; i++) {
+        html += `<tr>`;
+        data[i].forEach(cell => html += `<td>${cell}</td>`);
+        html += `</tr>`;
+      }
+      html += `</tbody></table>`;
+      tseRulesContainer.innerHTML = html;
+    }
+
+    function renderGuide(data) {
+      if (!data || data.length < 2) {
+        guideContainer.innerHTML = `<div class="empty-state"><i class="fas fa-book-open"></i><p>Nenhum guia carregado.</p></div>`;
+        return;
+      }
+      let html = `<table><thead><tr>`;
+      const headers = data[0];
+      headers.forEach(h => html += `<th>${h}</th>`);
+      html += `</tr></thead><tbody>`;
+      for (let i = 1; i < data.length; i++) {
+        html += `<tr>`;
+        data[i].forEach(cell => html += `<td>${cell}</td>`);
+        html += `</tr>`;
+      }
+      html += `</tbody></table>`;
+      guideContainer.innerHTML = html;
+    }
+
+    function loadFullData(cal, rules, guide) {
+      currentCalendarData = cal.slice(1) || [];
+      renderCalendar(currentCalendarData);
+      renderRules(rules);
+      renderGuide(guide);
+      updateStatus('Dados carregados com sucesso!', 'success');
+    }
+
+    function updateStatus(msg, type = '') {
+      statusMsg.textContent = msg;
+      statusMsg.className = 'status' + (type ? ' ' + type : '');
+    }
+
+    // ===================== CARREGAR EXEMPLO =====================
+    function loadSample() {
+      const cal = sampleData.calendario;
+      const rules = sampleData.regras;
+      const guide = sampleData.guia;
+      loadFullData(cal, rules, guide);
+    }
+    document.getElementById('loadSampleBtn').addEventListener('click', loadSample);
+
+    // ===================== GOOGLE SHEETS (via JSON export) =====================
+    function fetchGoogleSheet(url) {
+      // Extrai o ID da planilha da URL
+      let sheetId = '';
+      const patterns = [
+        /\/d\/([a-zA-Z0-9-_]+)/,
+        /spreadsheets\/d\/([a-zA-Z0-9-_]+)/
+      ];
+      for (const pattern of patterns) {
+        const match = url.match(pattern);
+        if (match) {
+          sheetId = match[1];
+          break;
+        }
+      }
+      
+      if (!sheetId) {
+        updateStatus('URL inválida. Use o link de compartilhamento da planilha.', 'error');
+        return;
+      }
+
+      updateStatus('Buscando dados do Google Sheets...', '');
+      
+      // Usa a API de exportação do Google Sheets (formato CSV para cada aba)
+      // Primeiro: tenta buscar como CSV (mais simples e confiável)
+      const baseUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv`;
+      
+      // Como não sabemos os nomes das abas, vamos tentar buscar cada uma por índice
+      const sheetNames = ['Calendário', 'Datas e regras do TSE', 'Guia de tom e vocabulário'];
+      const results = {};
+      let completed = 0;
+      
+      sheetNames.forEach((name, index) => {
+        const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(name)}`;
+        
+        fetch(csvUrl)
+          .then(response => {
+            if (!response.ok) throw new Error(`Erro ao buscar aba "${name}"`);
+            return response.text();
+          })
+          .then(csvText => {
+            // Converte CSV para array 2D
+            const rows = csvToArray(csvText);
+            if (rows && rows.length > 0) {
+              results[index] = rows;
+            }
+            completed++;
+            if (completed === sheetNames.length) {
+              processSheetResults(results);
+            }
+          })
+          .catch(err => {
+            console.warn(`Erro na aba "${name}":`, err);
+            completed++;
+            if (completed === sheetNames.length) {
+              processSheetResults(results);
+            }
+          });
+      });
+    }
+
+    function csvToArray(csv) {
+      const lines = csv.split('\n').filter(line => line.trim() !== '');
+      if (lines.length === 0) return null;
+      
+      return lines.map(line => {
+        // Parse CSV simples (considera aspas)
+        const cells = [];
+        let current = '';
+        let inQuotes = false;
+        for (let i = 0; i < line.length; i++) {
+          const char = line[i];
+          if (char === '"') {
+            if (inQuotes && line[i+1] === '"') {
+              current += '"';
+              i++;
+            } else {
+              inQuotes = !inQuotes;
+            }
+          } else if (char === ',' && !inQuotes) {
+            cells.push(current.trim());
+            current = '';
+          } else {
+            current += char;
+          }
+        }
+        cells.push(current.trim());
+        return cells;
+      });
+    }
+
+    function processSheetResults(results) {
+      const calData = results[0] || null;
+      const rulesData = results[1] || null;
+      const guideData = results[2] || null;
+
+      if (!calData) {
+        updateStatus('Não foi possível carregar a aba "Calendário". Verifique os nomes das abas.', 'error');
+        return;
+      }
+
+      // Verifica se os cabeçal

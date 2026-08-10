@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transcrição IA - Gabinete 247</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #000000;
+            --glass-bg: rgba(30, 30, 32, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a5;
+            --accent-color: #0a84ff;
+            --accent-glow: rgba(10, 132, 255, 0.5);
+            --timestamp-color: #32d74b;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
+
+        body {
+            background-color: transparent;
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            background: radial-gradient(circle at 15% 50%, rgba(72, 49, 157, 0.4), transparent 50%),
+                        radial-gradient(circle at 85% 30%, rgba(10, 132, 255, 0.3), transparent 50%),
+                        #000000;
+            background-attachment: fixed;
+            padding: 2rem;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+            border: 1px solid var(--glass-border); border-radius: 36px; width: 100%; max-width: 900px;
+            min-height: 550px; padding: 50px; box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+            position: relative; overflow: hidden; transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .header { text-align: center; margin-bottom: 40px; position: relative; z-index: 2; }
+        .header h1 { font-size: 32px; font-weight: 700; letter-spacing: -0.5px; background: linear-gradient(135deg, #fff, #a0a0a5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .header p { color: var(--text-secondary); font-size: 16px; margin-top: 8px; }
+
+        #upload-section {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            border: 2px dashed rgba(255, 255, 255, 0.2); border-radius: 24px; padding: 60px 20px;
+            cursor: pointer; transition: all 0.3s ease; position: relative; z-index: 2;
+        }
+        #upload-section:hover { border-color: var(--accent-color); background: rgba(10, 132, 255, 0.05); }
+        .upload-icon { font-size: 48px; margin-bottom: 16px; color: var(--accent-color); }
+        #file-input { display: none; }
+        .upload-btn { background: var(--accent-color); color: white; border: none; padding: 14px 32px; border-radius: 20px; font-size: 16px; font-weight: 600; margin-top: 20px; box-shadow: 0 8px 24px var(--accent-glow); pointer-events: none; }
+
+        #processing-section { display: none; flex-direction: column; align-items: center; justify-content: center; height: 350px; position: relative; z-index: 2; }
+        canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0; transition: opacity 1s ease; }
+        .processing-text { position: relative; z-index: 1; font-size: 20px; font-weight: 500; letter-spacing: 1px; animation: pulse 2s infinite; text-align: center; }
+        .progress-bar-container { width: 60%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 10px; margin-top: 20px; overflow: hidden; position: relative; z-index: 1; }
+        .progress-bar { height: 100%; width: 0%; background: var(--accent-color); box-shadow: 0 0 10px var(--accent-color); transition: width 0.3s ease; }
+
+        @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; text-shadow: 0 0 15px rgba(255,255,255,0.5); } 100% { opacity: 0.6; } }
+
+        #result-section { display: none; animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1); position: relative; z-index: 2; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .transcription-box { background: rgba(0, 0, 0, 0.3); border-radius: 20px; padding: 24px; max-height: 380px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 24px; }
+        .transcription-box::-webkit-scrollbar { width: 8px; }
+        .transcription-box::-webkit-scrollbar-track { background: transparent; }
+        .transcription-box::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+
+        .speech-block { margin-bottom: 24px; line-height: 1.6; }
+        .meta-info { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; font-size: 14px; flex-wrap: wrap; }
+        .timestamp { color: var(--timestamp-color); font-family: "SF Mono", monospace; font-weight: 500; background: rgba(50, 215, 75, 0.1); padding: 4px 10px; border-radius: 8px; }
+        .speaker { font-weight: 600; color: var(--accent-color); font-size: 15px; }
+        .text { color: rgba(255, 255, 255, 0.95); font-size: 16px; padding-left: 14px; border-left: 2px solid rgba(255,255,255,0.1); outline: none; transition: background 0.2s;}
+        .text:focus { background: rgba(255,255,255,0.05); border-left: 2px solid var(--accent-color); }
+
+        .action-buttons { display: flex; justify-content: flex-end; gap: 12px; flex-wrap: wrap; }
+        .btn-action { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 12px 24px; border-radius: 16px; cursor: pointer; backdrop-filter: blur(10px); transition: all 0.2s; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+        .btn-action:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
+        .btn-action.primary { background: var(--accent-color); border: none; box-shadow: 0 4px 15px var(--accent-glow); }
+        .btn-action.primary:hover { background: #0070e0; }
+        .toast { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: rgba(50, 215, 75, 0.2); border: 1px solid var(--timestamp-color); color: var(--timestamp-color); padding: 10px 24px; border-radius: 30px; backdrop-filter: blur(10px); font-weight: 600; opacity: 0; transition: all 0.4s ease; z-index: 100; }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+        @media (max-width: 600px) { .glass-panel { padding: 30px 20px; border-radius: 24px; } .action-buttons { justify-content: center; } .btn-action { width: 100%; justify-content: center; } }
+    </style>
+</head>
+<body>
+
+    <div class="glass-panel" id="main-panel">
+        <canvas id="particles"></canvas>
+        
+        <div class="header">
+            <h1>NeuralSync™ Audio</h1>
+            <p>Transcrição IA Gratuita direto no seu navegador</p>
+        </div>
+
+        <div id="upload-section" onclick="document.getElementById('file-input').click()">
+            <input type="file" id="file-input" accept="audio/*,video/*">
+            <i class="fas fa-cloud-upload-alt upload-icon"></i>
+            <h3 style="font-size: 1.2rem; font-weight: 600;">Toque para selecionar áudio ou vídeo</h3>
+            <p style="color: var(--text-secondary); margin-top: 8px; font-size: 14px;">Recomendado: Arquivos de até 5 minutos para processamento rápido.</p>
+            <button class="upload-btn">Carregar Mídia</button>
+        </div>
+
+        <div id="processing-section">
+            <div class="processing-text" id="status-text">Preparando motor de IA Neural...</div>
+            <p style="color: var(--text-secondary); font-size: 13px; margin-top: 10px;" id="sub-status">O primeiro uso baixará o modelo (~240MB)</p>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+        </div>
+
+        <div id="result-section">
+            <p style="color: var(--timestamp-color); font-size: 12px; margin-bottom: 10px; text-align: right;"><i class="fas fa-info-circle"></i> Clique nos textos para corrigir erros</p>
+            <div class="transcription-box" id="transcription-content">
+                <!-- Conteúdo será injetado aqui pelo JS -->
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn-action" onclick="location.reload()">
+                    <i class="fas fa-redo"></i> Nova Mídia
+                </button>
+                <button class="btn-action" onclick="copiarTexto()">
+                    <i class="fas fa-copy"></i> Copiar
+                </button>
+                <button class="btn-action primary" onclick="baixarTXT()">
+                    <i class="fas fa-file-alt"></i> Baixar .TXT
+                </button>
+            </div>
+        </div>
+        
+        <div id="toast" class="toast"><i class="fas fa-check-circle"></i> Transcrição copiada!</div>
+    </div>
+
+    <script>
+        // --- 1. CONFIGURAÇÃO DE PARTÍCULAS (MANTIDA PARA O VISUAL) ---
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        let particlesArray, animationFrameId;
+
+        function initParticles() {
+            canvas.width = document.getElementById('main-panel').offsetWidth;
+            canvas.height = document.getElementById('main-panel').offsetHeight;
+            particlesArray = [];
+            for (let i = 0; i < (canvas.width * canvas.height)/6000; i++) {
+                let size = (Math.random() * 2) + 1;
+                particlesArray.push(new Particle(
+                    (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2),
+                    (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2),
+                    (Math.random() * 2) - 1, (Math.random() * 2) - 1, size, '#0a84ff'
+                ));
+            }
+        }
+        class Particle {
+            constructor(x, y, dx, dy, s, c) { this.x=x; this.y=y; this.dx=dx; this.dy=dy; this.s=s; }
+            draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.s, 0, Math.PI*2, false); ctx.fillStyle='#fff'; ctx.fill(); }
+            update() { 
+                if(this.x > canvas.width || this.x < 0) this.dx = -this.dx; 
+                if(this.y > canvas.height || this.y < 0) this.dy = -this.dy; 
+                this.x += this.dx; this.y += this.dy; this.draw(); 
+            }
+        }
+        function connect() {
+            for(let a=0; a<particlesArray.length; a++){
+                for(let b=a; b<particlesArray.length; b++){
+                    let dist = ((particlesArray[a].x - particlesArray[b].x)**2) + ((particlesArray[a].y - particlesArray[b].y)**2);
+                    if(dist < (canvas.width/7)*(canvas.height/7)){
+                        ctx.strokeStyle = `rgba(10, 132, 255, ${1 - (dist/10000)})`;
+                        ctx.lineWidth = 1; ctx.beginPath();
+                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y); ctx.stroke();
+                    }
+                }
+            }
+        }
+        function animateParticles() {
+            animationFrameId = requestAnimationFrame(animateParticles);
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            for(let i=0; i<particlesArray.length; i++) particlesArray[i].update();
+            connect();
+        }
+
+        // --- 2. LÓGICA DE INTELIGÊNCIA ARTIFICIAL REAL (AGORA COM WEB WORKER PARA NÃO TRAVAR) ---
+        
+        function formatTime(seconds) {
+            if (isNaN(seconds) || seconds === null) seconds = 0;
+            const date = new Date(null);
+            date.setSeconds(seconds);
+            return `[${date.toISOString().substr(11, 8)}]`;
+        }
+
+        async function extractAudio(file) {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
+            const arrayBuffer = await file.arrayBuffer();
+            const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+            return audioBuffer.getChannelData(0);
+        }
+
+        // Criando o Worker inline para não travar a aba (UI)
+        const workerCode = `
+            import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.16.0';
+            env.allowLocalModels = false;
+
+            let transcriber = null;
+
+            self.onmessage = async (e) => {
+                const audioData = e.data.audioData;
+                
+                try {
+                    if (!transcriber) {
+                        self.postMessage({ status: 'loading_model' });
+                        // Upgrade para whisper-small para maior precisão em português
+                        transcriber = await pipeline('automatic-speech-recognition', 'Xenova/whisper-small', {
+                            progress_callback: (info) => {
+                                self.postMessage({ status: 'progress', info: info });
+                            }
+                        });
+                    }
+
+                    self.postMessage({ status: 'transcribing' });
+
+                    const output = await transcriber(audioData, {
+                        chunk_length_s: 30,
+                        stride_length_s: 5,
+                        language: 'portuguese',
+                        task: 'transcribe',
+                        return_timestamps: true
+                    });
+
+                    self.postMessage({ status: 'complete', output: output });
+                } catch (error) {
+                    self.postMessage({ status: 'error', error: error.message });
+                }
+            };
+        `;
+
+        const blob = new Blob([workerCode], { type: 'application/javascript' });
+        const worker = new Worker(URL.createObjectURL(blob), { type: 'module' });
+
+        document.getElementById('file-input').addEventListener('change', async function(e) {
+            if(this.files && this.files.length > 0) {
+                const file = this.files[0];
+                
+                document.getElementById('upload-section').style.display = 'none';
+                document.getElementById('processing-section').style.display = 'flex';
+                canvas.style.opacity = 1;
+                initParticles(); animateParticles();
+
+                const statusText = document.getElementById('status-text');
+                const subStatus = document.getElementById('sub-status');
+                const progressBar = document.getElementById('progress-bar');
+                const resultBox = document.getElementById('transcription-content');
+
+                try {
+                    statusText.innerText = "Extraindo faixa de áudio...";
+                    const audioData = await extractAudio(file);
+
+                    // Envia os dados para o Worker rodar em segundo plano sem travar
+                    worker.postMessage({ audioData: audioData });
+
+                    worker.onmessage = function(event) {
+                        const data = event.data;
+
+                        if (data.status === 'loading_model') {
+                            statusText.innerText = "Carregando IA Whisper (Versão Small)...";
+                            subStatus.innerText = "Maior precisão em português (~240MB no primeiro uso)";
+                        } 
+                        else if (data.status === 'progress' && data.info) {
+                            if(data.info.status === 'progress') {
+                                progressBar.style.width = data.info.progress + '%';
+                            }
+                        }
+                        else if (data.status === 'transcribing') {
+                            statusText.innerText = "Transcrevendo texto e tempos...";
+                            subStatus.innerText = "Rodando em segundo plano. As animações não vão mais travar.";
+                            progressBar.style.width = '100%';
+                            progressBar.style.animation = 'pulse 1s infinite alternate';
+                        }
+                        else if (data.status === 'complete') {
+                            resultBox.innerHTML = ''; 
+                            const output = data.output;
+                            
+                            if (output.chunks && output.chunks.length > 0) {
+                                output.chunks.forEach((chunk, index) => {
+                                    // Proteção rigorosa para os timestamps
+                                    const rawTime = (chunk.timestamp && chunk.timestamp[0] !== null) ? chunk.timestamp[0] : 0;
+                                    const startTime = formatTime(rawTime);
+                                    
+                                    const blocoHTML = `
+                                        <div class="speech-block">
+                                            <div class="meta-info">
+                                                <span class="timestamp">${startTime}</span>
+                                                <span class="speaker" contenteditable="true">Locutor ${index + 1}</span>
+                                                <span class="description" style="font-size:11px; cursor:pointer;" onclick="this.innerText='(Editável)'">(Toque para descrever)</span>
+                                            </div>
+                                            <div class="text" contenteditable="true">${chunk.text.trim()}</div>
+                                        </div>
+                                    `;
+                                    resultBox.innerHTML += blocoHTML;
+                                });
+                            } else {
+                                // Fallback seguro se o áudio não gerar recortes de tempo
+                                resultBox.innerHTML = `
+                                    <div class="speech-block">
+                                        <div class="meta-info">
+                                            <span class="timestamp">[00:00:00]</span>
+                                            <span class="speaker" contenteditable="true">Locutor 1</span>
+                                        </div>
+                                        <div class="text" contenteditable="true">${output.text}</div>
+                                    </div>`;
+                            }
+
+                            cancelAnimationFrame(animationFrameId);
+                            canvas.style.opacity = 0;
+                            document.getElementById('processing-section').style.display = 'none';
+                            document.getElementById('result-section').style.display = 'block';
+                        }
+                        else if (data.status === 'error') {
+                            console.error(data.error);
+                            statusText.innerText = "Erro ao processar.";
+                            subStatus.innerText = "Erro: " + data.error;
+                            progressBar.style.background = '#ff3b30';
+                        }
+                    };
+
+                } catch (error) {
+                    console.error(error);
+                    statusText.innerText = "Erro ao extrair áudio.";
+                    subStatus.innerText = "Verifique o formato do arquivo ou tente um áudio menor.";
+                    progressBar.style.background = '#ff3b30';
+                }
+            }
+        });
+
+        // --- 3. EXPORTAÇÃO ---
+        function gerarTextoPlano() {
+            let plainText = "=================================================\n";
+            plainText += "   TRANSCRIÇÃO DE ÁUDIO - GABINETE 247\n";
+            plainText += "   Gerado localmente por IA (Whisper)\n";
+            plainText += "=================================================\n\n";
+
+            const blocos = document.querySelectorAll('.speech-block');
+            blocos.forEach(bloco => {
+                const tempo = bloco.querySelector('.timestamp') ? bloco.querySelector('.timestamp').innerText : '';
+                const locutor = bloco.querySelector('.speaker') ? bloco.querySelector('.speaker').innerText : '';
+                const textoFala = bloco.querySelector('.text').innerText.trim();
+                plainText += `${tempo} ${locutor}\n${textoFala}\n\n`;
+            });
+            return plainText;
+        }
+
+        function copiarTexto() {
+            navigator.clipboard.writeText(gerarTextoPlano()).then(() => {
+                const toast = document.getElementById('toast');
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3000);
+            });
+        }
+
+        function baixarTXT() {
+            const blob = new Blob([gerarTextoPlano()], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url; link.download = 'Transcricao_Gabinete247.txt';
+            document.body.appendChild(link); link.click(); document.body.removeChild(link); URL.revokeObjectURL(url);
+        }
+
+        window.addEventListener('resize', () => { if(canvas.style.opacity == 1) initParticles(); });
+    </script>
+</body>
+</html>
