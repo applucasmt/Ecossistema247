@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Calendário de Conteúdo · Chico Guarnieri</title>
-  <!-- Google Fonts & Font Awesome -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
@@ -45,7 +44,7 @@
       -webkit-text-fill-color: #1e4b6e;
       margin-right: 8px;
     }
-    .upload-area {
+    .header-actions {
       display: flex;
       gap: 12px;
       align-items: center;
@@ -65,6 +64,7 @@
       transition: 0.2s;
       cursor: pointer;
       box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+      font-family: 'Inter', sans-serif;
     }
     .btn i {
       color: #3b6a8f;
@@ -98,50 +98,58 @@
       background: #09663b;
       border-color: #09663b;
     }
-    .config-section {
+    .btn-danger {
+      background: #dc2626;
+      border-color: #dc2626;
+      color: white;
+    }
+    .btn-danger i {
+      color: white;
+    }
+    .btn-danger:hover {
+      background: #b91c1c;
+      border-color: #b91c1c;
+    }
+    .status-bar {
       background: white;
       border-radius: 16px;
-      padding: 1.2rem 1.5rem;
+      padding: 0.8rem 1.5rem;
       margin-bottom: 2rem;
       border: 1px solid #e2e8f0;
       display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
+      justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
     }
-    .config-section label {
-      font-weight: 600;
+    .status-msg {
       font-size: 0.9rem;
-      color: #475569;
-    }
-    .config-section input {
-      flex: 1;
-      min-width: 300px;
-      padding: 0.5rem 1rem;
-      border: 1px solid #d0d9e8;
-      border-radius: 40px;
-      font-size: 0.9rem;
-      font-family: 'Inter', sans-serif;
-    }
-    .config-section input:focus {
-      outline: none;
-      border-color: #1e4b6e;
-      box-shadow: 0 0 0 3px rgba(30, 75, 110, 0.1);
-    }
-    .status {
-      font-size: 0.85rem;
       color: #64748b;
-      padding: 0.3rem 0.8rem;
-      background: #f1f5f9;
-      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-    .status.success {
-      background: #dcfce7;
+    .status-msg i {
+      color: #3b6a8f;
+    }
+    .status-msg.success {
       color: #166534;
     }
-    .status.error {
-      background: #fee2e2;
+    .status-msg.success i {
+      color: #0b7e4b;
+    }
+    .status-msg.error {
       color: #991b1b;
+    }
+    .status-msg.error i {
+      color: #dc2626;
+    }
+    .status-msg.loading i {
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
     .tabs {
       display: flex;
@@ -163,6 +171,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      font-family: 'Inter', sans-serif;
     }
     .tab i {
       font-size: 1rem;
@@ -422,19 +431,16 @@
       color: #cbdae9;
       margin-bottom: 0.8rem;
     }
-    .loading {
+    .loading-state {
       text-align: center;
-      padding: 2rem;
+      padding: 3rem 1rem;
       color: #64748b;
     }
-    .loading i {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
+    .loading-state i {
+      font-size: 2.5rem;
+      color: #1e4b6e;
+      margin-bottom: 0.8rem;
       animation: spin 1s linear infinite;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
     }
     @media (max-width: 640px) {
       .header {
@@ -442,8 +448,8 @@
         align-items: stretch;
         gap: 0.8rem;
       }
-      .config-section input {
-        min-width: auto;
+      .header-actions {
+        justify-content: flex-start;
       }
       .calendar-grid {
         grid-template-columns: 1fr;
@@ -465,18 +471,18 @@
 <div class="container" id="app">
   <div class="header">
     <h1><i class="fas fa-calendar-alt"></i> Calendário · Chico Guarnieri</h1>
-    <div class="upload-area">
-      <button class="btn btn-success" id="loadGoogleBtn"><i class="fab fa-google"></i> Carregar do Google Sheets</button>
-      <button class="btn btn-primary" id="loadSampleBtn"><i class="fas fa-database"></i> Carregar exemplo</button>
+    <div class="header-actions">
+      <button class="btn btn-success" id="loadDataBtn"><i class="fas fa-sync"></i> Carregar Dados</button>
+      <button class="btn btn-primary" id="loadSampleBtn"><i class="fas fa-database"></i> Carregar Exemplo</button>
     </div>
   </div>
 
-  <!-- Configuração Google Sheets -->
-  <div class="config-section">
-    <label for="sheetUrl"><i class="fas fa-link"></i> URL da planilha:</label>
-    <input type="text" id="sheetUrl" placeholder="https://docs.google.com/spreadsheets/d/SEU_ID/edit" value="">
-    <button class="btn btn-success" id="fetchSheetBtn"><i class="fas fa-sync"></i> Buscar</button>
-    <span id="statusMsg" class="status">Aguardando...</span>
+  <div class="status-bar">
+    <div class="status-msg" id="statusMsg">
+      <i class="fas fa-info-circle"></i> 
+      <span>Pronto para carregar os dados</span>
+    </div>
+    <span style="font-size:0.8rem; color:#94a3b8;" id="lastUpdate"></span>
   </div>
 
   <div class="tabs">
@@ -487,19 +493,28 @@
 
   <div id="tab1" class="tab-content active">
     <div id="calendarContainer" class="calendar-grid">
-      <div class="loading"><i class="fas fa-spinner"></i><br>Carregando dados...</div>
+      <div class="loading-state">
+        <i class="fas fa-calendar-plus"></i>
+        <p>Clique em "Carregar Dados" para buscar do Google Sheets<br>ou "Carregar Exemplo" para ver uma demonstração</p>
+      </div>
     </div>
   </div>
 
   <div id="tab2" class="tab-content">
     <div class="table-wrap" id="tseRulesContainer">
-      <div class="loading"><i class="fas fa-spinner"></i><br>Carregando regras...</div>
+      <div class="loading-state">
+        <i class="fas fa-gavel"></i>
+        <p>Carregue os dados para ver as regras do TSE</p>
+      </div>
     </div>
   </div>
 
   <div id="tab3" class="tab-content">
     <div class="table-wrap" id="guideContainer">
-      <div class="loading"><i class="fas fa-spinner"></i><br>Carregando guia...</div>
+      <div class="loading-state">
+        <i class="fas fa-book-open"></i>
+        <p>Carregue os dados para ver o guia de tom</p>
+      </div>
     </div>
   </div>
 
@@ -518,6 +533,14 @@
 
 <script>
   (function() {
+    'use strict';
+
+    // ============================================================
+    // ⚙️ CONFIGURAÇÃO - COLOQUE A URL DO SEU Google Apps Script AQUI
+    // ============================================================
+    const SCRIPT_URL = 'https://script.google.com/macros/s/SEU_ID_AQUI/exec';
+    // ============================================================
+
     // ===================== DADOS DE EXEMPLO =====================
     const sampleData = {
       calendario: [
@@ -559,9 +582,7 @@
     const modalFase = document.getElementById('modalFase');
     const modalBody = document.getElementById('modalBody');
     const statusMsg = document.getElementById('statusMsg');
-    const sheetUrlInput = document.getElementById('sheetUrl');
-    const fetchSheetBtn = document.getElementById('fetchSheetBtn');
-    const loadGoogleBtn = document.getElementById('loadGoogleBtn');
+    const lastUpdate = document.getElementById('lastUpdate');
 
     let currentCalendarData = [];
 
@@ -621,7 +642,7 @@
     // ===================== RENDERIZAÇÃO =====================
     function renderCalendar(data) {
       if (!data || data.length === 0) {
-        calendarContainer.innerHTML = `<div class="empty-state"><i class="fas fa-calendar-plus"></i><p>Nenhum dado carregado. Importe um arquivo ou use o exemplo.</p></div>`;
+        calendarContainer.innerHTML = `<div class="empty-state"><i class="fas fa-calendar-plus"></i><p>Nenhum dado carregado. Clique em "Carregar Dados" ou "Carregar Exemplo".</p></div>`;
         return;
       }
       let html = '';
@@ -633,7 +654,6 @@
         const tema = row[4] || '';
         const ideia = row[5] || '';
         const formato = row[6] || '';
-        const nota = row[7] || '';
         const titulo = objetivo || tema || 'Atividade';
         html += `
           <div class="card-item" data-index="${index}">
@@ -704,11 +724,62 @@
       renderRules(rules);
       renderGuide(guide);
       updateStatus('Dados carregados com sucesso!', 'success');
+      lastUpdate.textContent = 'Última atualização: ' + new Date().toLocaleString('pt-BR');
     }
 
     function updateStatus(msg, type = '') {
-      statusMsg.textContent = msg;
-      statusMsg.className = 'status' + (type ? ' ' + type : '');
+      const icon = document.querySelector('.status-msg i');
+      const text = document.querySelector('.status-msg span');
+      
+      if (type === 'success') {
+        statusMsg.className = 'status-msg success';
+        icon.className = 'fas fa-check-circle';
+      } else if (type === 'error') {
+        statusMsg.className = 'status-msg error';
+        icon.className = 'fas fa-exclamation-circle';
+      } else if (type === 'loading') {
+        statusMsg.className = 'status-msg loading';
+        icon.className = 'fas fa-spinner';
+      } else {
+        statusMsg.className = 'status-msg';
+        icon.className = 'fas fa-info-circle';
+      }
+      text.textContent = msg;
+    }
+
+    // ===================== CARREGAR DO GOOGLE SHEETS =====================
+    function loadFromGoogleSheets() {
+      if (!SCRIPT_URL || SCRIPT_URL === 'https://script.google.com/macros/s/SEU_ID_AQUI/exec') {
+        updateStatus('⚠️ Configure a URL do Google Apps Script no código!', 'error');
+        return;
+      }
+
+      updateStatus('Buscando dados do Google Sheets...', 'loading');
+      
+      fetch(SCRIPT_URL)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+          return response.json();
+        })
+        .then(result => {
+          if (!result.success) {
+            throw new Error(result.error || 'Erro ao buscar dados');
+          }
+          
+          const { calendario, regras, guia } = result.data;
+          
+          if (!calendario || calendario.length < 2) {
+            throw new Error('Dados do calendário vazios ou inválidos');
+          }
+          
+          loadFullData(calendario, regras || sampleData.regras, guia || sampleData.guia);
+        })
+        .catch(error => {
+          console.error('Erro:', error);
+          updateStatus('❌ Erro ao carregar: ' + error.message, 'error');
+        });
     }
 
     // ===================== CARREGAR EXEMPLO =====================
@@ -717,108 +788,24 @@
       const rules = sampleData.regras;
       const guide = sampleData.guia;
       loadFullData(cal, rules, guide);
+      updateStatus('Dados de exemplo carregados!', 'success');
     }
+
+    // ===================== BOTÕES =====================
+    document.getElementById('loadDataBtn').addEventListener('click', loadFromGoogleSheets);
     document.getElementById('loadSampleBtn').addEventListener('click', loadSample);
 
-    // ===================== GOOGLE SHEETS (via JSON export) =====================
-    function fetchGoogleSheet(url) {
-      // Extrai o ID da planilha da URL
-      let sheetId = '';
-      const patterns = [
-        /\/d\/([a-zA-Z0-9-_]+)/,
-        /spreadsheets\/d\/([a-zA-Z0-9-_]+)/
-      ];
-      for (const pattern of patterns) {
-        const match = url.match(pattern);
-        if (match) {
-          sheetId = match[1];
-          break;
-        }
-      }
-      
-      if (!sheetId) {
-        updateStatus('URL inválida. Use o link de compartilhamento da planilha.', 'error');
-        return;
-      }
-
-      updateStatus('Buscando dados do Google Sheets...', '');
-      
-      // Usa a API de exportação do Google Sheets (formato CSV para cada aba)
-      // Primeiro: tenta buscar como CSV (mais simples e confiável)
-      const baseUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv`;
-      
-      // Como não sabemos os nomes das abas, vamos tentar buscar cada uma por índice
-      const sheetNames = ['Calendário', 'Datas e regras do TSE', 'Guia de tom e vocabulário'];
-      const results = {};
-      let completed = 0;
-      
-      sheetNames.forEach((name, index) => {
-        const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(name)}`;
-        
-        fetch(csvUrl)
-          .then(response => {
-            if (!response.ok) throw new Error(`Erro ao buscar aba "${name}"`);
-            return response.text();
-          })
-          .then(csvText => {
-            // Converte CSV para array 2D
-            const rows = csvToArray(csvText);
-            if (rows && rows.length > 0) {
-              results[index] = rows;
-            }
-            completed++;
-            if (completed === sheetNames.length) {
-              processSheetResults(results);
-            }
-          })
-          .catch(err => {
-            console.warn(`Erro na aba "${name}":`, err);
-            completed++;
-            if (completed === sheetNames.length) {
-              processSheetResults(results);
-            }
-          });
-      });
-    }
-
-    function csvToArray(csv) {
-      const lines = csv.split('\n').filter(line => line.trim() !== '');
-      if (lines.length === 0) return null;
-      
-      return lines.map(line => {
-        // Parse CSV simples (considera aspas)
-        const cells = [];
-        let current = '';
-        let inQuotes = false;
-        for (let i = 0; i < line.length; i++) {
-          const char = line[i];
-          if (char === '"') {
-            if (inQuotes && line[i+1] === '"') {
-              current += '"';
-              i++;
-            } else {
-              inQuotes = !inQuotes;
-            }
-          } else if (char === ',' && !inQuotes) {
-            cells.push(current.trim());
-            current = '';
-          } else {
-            current += char;
-          }
-        }
-        cells.push(current.trim());
-        return cells;
-      });
-    }
-
-    function processSheetResults(results) {
-      const calData = results[0] || null;
-      const rulesData = results[1] || null;
-      const guideData = results[2] || null;
-
-      if (!calData) {
-        updateStatus('Não foi possível carregar a aba "Calendário". Verifique os nomes das abas.', 'error');
-        return;
-      }
-
-      // Verifica se os cabeçal
+    // ===================== INICIALIZAÇÃO =====================
+    // Mostra instruções iniciais
+    console.log('✅ Calendário Chico Guarnieri carregado!');
+    console.log('📌 Para usar com Google Sheets:');
+    console.log('1. Publique o script como Web App (Implantar > Novo deployment)');
+    console.log('2. Copie a URL e cole na variável SCRIPT_URL no HTML');
+    console.log('3. A planilha deve ter 3 abas: "Calendário", "Datas e regras do TSE", "Guia de tom e vocabulário"');
+    
+    // Carrega exemplo automaticamente ao iniciar
+    loadSample();
+  })();
+</script>
+</body>
+</html>
