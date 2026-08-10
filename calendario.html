@@ -98,18 +98,6 @@
       background: #09663b;
       border-color: #09663b;
     }
-    .btn-danger {
-      background: #dc2626;
-      border-color: #dc2626;
-      color: white;
-    }
-    .btn-danger i {
-      color: white;
-    }
-    .btn-danger:hover {
-      background: #b91c1c;
-      border-color: #b91c1c;
-    }
     .status-bar {
       background: white;
       border-radius: 16px;
@@ -218,6 +206,55 @@
       box-shadow: 0 12px 28px rgba(0,0,0,0.06);
       border-color: #cbdae9;
     }
+    /* Cores dos cards baseadas na data */
+    .card-item.status-passed {
+      background: #fef2f2;
+      border-color: #fecaca;
+    }
+    .card-item.status-passed .card-date {
+      color: #991b1b;
+    }
+    .card-item.status-passed .badge-fase {
+      background: #fecaca;
+      color: #991b1b;
+    }
+    .card-item.status-passed .card-tema {
+      background: #fecaca;
+      color: #991b1b;
+    }
+    
+    .card-item.status-warning {
+      background: #fffbeb;
+      border-color: #fde68a;
+    }
+    .card-item.status-warning .card-date {
+      color: #92400e;
+    }
+    .card-item.status-warning .badge-fase {
+      background: #fde68a;
+      color: #92400e;
+    }
+    .card-item.status-warning .card-tema {
+      background: #fde68a;
+      color: #92400e;
+    }
+    
+    .card-item.status-future {
+      background: #f0fdf4;
+      border-color: #86efac;
+    }
+    .card-item.status-future .card-date {
+      color: #166534;
+    }
+    .card-item.status-future .badge-fase {
+      background: #86efac;
+      color: #166534;
+    }
+    .card-item.status-future .card-tema {
+      background: #86efac;
+      color: #166534;
+    }
+    
     .card-date {
       font-weight: 700;
       font-size: 1.25rem;
@@ -234,6 +271,18 @@
       background: #f1f5f9;
       padding: 0.2rem 0.7rem;
       border-radius: 30px;
+    }
+    .card-item.status-passed .weekday {
+      background: #fecaca;
+      color: #991b1b;
+    }
+    .card-item.status-warning .weekday {
+      background: #fde68a;
+      color: #92400e;
+    }
+    .card-item.status-future .weekday {
+      background: #86efac;
+      color: #166534;
     }
     .card-title {
       font-weight: 600;
@@ -263,23 +312,43 @@
       align-items: center;
       gap: 4px;
     }
+    .card-item.status-passed .card-meta span {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+    .card-item.status-warning .card-meta span {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    .card-item.status-future .card-meta span {
+      background: #dcfce7;
+      color: #166534;
+    }
     .card-meta i {
       font-size: 0.7rem;
       color: #7e9bb8;
     }
     .card-tema {
-      background: #e9eff6;
       border-radius: 30px;
       padding: 0.2rem 0.9rem;
       font-size: 0.7rem;
       font-weight: 500;
-      color: #1e4b6e;
       align-self: flex-start;
       margin-top: 8px;
     }
+    .card-item.status-passed .card-tema {
+      background: #fecaca;
+      color: #991b1b;
+    }
+    .card-item.status-warning .card-tema {
+      background: #fde68a;
+      color: #92400e;
+    }
+    .card-item.status-future .card-tema {
+      background: #86efac;
+      color: #166534;
+    }
     .badge-fase {
-      background: #dbeafe;
-      color: #1e4b6e;
       border-radius: 30px;
       padding: 0.15rem 0.8rem;
       font-size: 0.7rem;
@@ -442,6 +511,22 @@
       margin-bottom: 0.8rem;
       animation: spin 1s linear infinite;
     }
+    .status-indicator {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+    .status-indicator.passed {
+      background: #dc2626;
+    }
+    .status-indicator.warning {
+      background: #f59e0b;
+    }
+    .status-indicator.future {
+      background: #16a34a;
+    }
     @media (max-width: 640px) {
       .header {
         flex-direction: column;
@@ -473,14 +558,13 @@
     <h1><i class="fas fa-calendar-alt"></i> Calendário · Chico Guarnieri</h1>
     <div class="header-actions">
       <button class="btn btn-success" id="loadDataBtn"><i class="fas fa-sync"></i> Carregar Dados</button>
-      <button class="btn btn-primary" id="loadSampleBtn"><i class="fas fa-database"></i> Carregar Exemplo</button>
     </div>
   </div>
 
   <div class="status-bar">
     <div class="status-msg" id="statusMsg">
       <i class="fas fa-info-circle"></i> 
-      <span>Pronto para carregar os dados</span>
+      <span>Clique em "Carregar Dados" para buscar do Google Sheets</span>
     </div>
     <span style="font-size:0.8rem; color:#94a3b8;" id="lastUpdate"></span>
   </div>
@@ -495,7 +579,7 @@
     <div id="calendarContainer" class="calendar-grid">
       <div class="loading-state">
         <i class="fas fa-calendar-plus"></i>
-        <p>Clique em "Carregar Dados" para buscar do Google Sheets<br>ou "Carregar Exemplo" para ver uma demonstração</p>
+        <p>Clique em "Carregar Dados" para buscar do Google Sheets</p>
       </div>
     </div>
   </div>
@@ -536,39 +620,9 @@
     'use strict';
 
     // ============================================================
-    // ⚙️ CONFIGURAÇÃO - COLOQUE A URL DO SEU Google Apps Script AQUI
+    // ⚙️ CONFIGURAÇÃO - URL DO Google Apps Script
     // ============================================================
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwGsca_F4C3zuTph-C6GwJSh_WmjiLef8qF2-WcZ2lh8E5c9iIB1mnAKlQHc9Mtt1NTFA/exec';
-    // ============================================================
-
-    // ===================== DADOS DE EXEMPLO =====================
-    const sampleData = {
-      calendario: [
-        ["Data","Dia da semana","Fase","Objetivo","Tema/Praça","Ideia de post","Formato sugerido","Nota TSE / observação"],
-        ["06/08/2026","Quinta","Diálogo (pré-campanha)","Trajetória pessoal","Reputação","Card com a frase de abertura: \"Sou daqui, conheço as dificuldades e nossa região precisa de um deputado.\" Sem pedir voto — foco em apresentar quem é Chico.","Feed (card)","Pré-campanha: permitido apresentar pré-candidatura, ideias e trajetória — vedado pedir voto ou fazer propaganda antecipada."],
-        ["07/08/2026","Sexta","Diálogo (pré-campanha)","Presença regional","Território","Foto de Chico em visita a um dos municípios do Médio-Norte, reforçando capilaridade e proximidade (sem menção a candidatura, só agenda de mandato).","Feed (foto)","Pré-campanha: permitido apresentar pré-candidatura, ideias e trajetória — vedado pedir voto ou fazer propaganda antecipada."],
-        ["08/08/2026","Sábado","Diálogo (pré-campanha)","Rotina do mandato","Bastidores","Stories mostrando um dia de agenda: reunião, visita a obra — humanizando o trabalho do deputado antes da campanha começar.","Stories","Pré-campanha: permitido apresentar pré-candidatura, ideias e trajetória — vedado pedir voto ou fazer propaganda antecipada."],
-        ["09/08/2026","Domingo","Diálogo (pré-campanha)","Números do mandato","Prestação de contas","Post com os números já entregues: exemplo R$1,2 mi em emendas destinadas a Barra do Bugres nos 100 primeiros dias e 200+ proposituras legislativas em menos de um ano.","Feed (card)","Pré-campanha: permitido apresentar pré-candidatura, ideias e trajetória — vedado pedir voto ou fazer propaganda antecipada."],
-        ["10/08/2026","Segunda","Diálogo (pré-campanha)","Origem e valores","Reputação","Vídeo curto contando a origem de Chico — engraxate, vendedor de picolé, mercearia — sem tom de vitimismo, como base do vocabulário \"quem é da região entende a região\".","Reels","Pré-campanha: permitido apresentar pré-candidatura, ideias e trajetória — vedado pedir voto ou fazer propaganda antecipada."],
-        ["16/08/2026","Domingo","Sensibilização","Sensibilização — conexão emocional e reputação","Lançamento","Vídeo de lançamento da campanha: Chico apresenta a frase-âncora \"Barra do Bugres vai voltar a ter presença, acompanhamento e cobrança até o fim\", primeira vez fixando número na legenda. Tom emocional, sem dado técnico ainda.","Reels + Feed","Propaganda eleitoral já permitida (a partir de 16/08). Evitar disparo em massa; impulsionamento pago só contratado formalmente pela campanha e identificado como tal."]
-      ],
-      regras: [
-        ["Data / período","Regra"],
-        ["01/01/2026","Início do registro obrigatório na Justiça Eleitoral de pesquisas de opinião pública divulgadas sobre o pleito."],
-        ["15/08/2026","Proibida a realização de enquetes relacionadas ao processo eleitoral — cabe poder de polícia contra a divulgação."],
-        ["16/08/2026","Início da propaganda eleitoral, inclusive na internet (Resolução TSE nº 23.610/2019, atualizada pelas Resoluções nº 23.732/2024 e 23.755/2026)."],
-        ["Todo o período eleitoral","Proibido o disparo em massa de mensagens de conteúdo político-eleitoral por aplicativos de mensagens e plataformas digitais."],
-        ["04/10/2026","1º turno das Eleições Gerais 2026. Votação das 8h às 17h, horário de Brasília. Deputados estaduais são eleitos em turno único."]
-      ],
-      guia: [
-        ["Item","Orientação"],
-        ["Arquétipo de marca","Fiscalizador — \"Barra do Bugres vai voltar a ter presença, acompanhamento e cobrança até o fim.\""],
-        ["Frase-chave de tom de voz","\"Sou daqui, conheço as dificuldades e nossa região precisa de um deputado.\""],
-        ["Traços do arquétipo","Defesa da região (bastidor em obras, reuniões, protocolos, ofícios) · Prestação de contas (números concretos, proposituras, prazos) · Proximidade física (perto das pessoas)."],
-        ["Vocabulário a usar","acompanhar, cobrar, fiscalizar, continuar, destinar, protocolar, monitorar, presença, região, entrega, prazo, ofício, emenda, articulação"],
-        ["Vocabulário a evitar","\"prometo resolver\", \"só eu posso\", \"vou dar um jeito\", \"nunca vi igual\" e superlativos vazios sem dado que sustente"]
-      ]
-    };
 
     // ===================== REFERÊNCIAS =====================
     const calendarContainer = document.getElementById('calendarContainer');
@@ -639,12 +693,42 @@
       modalOverlay.classList.add('open');
     }
 
+    // ===================== FUNÇÃO PARA CALCULAR STATUS DA DATA =====================
+    function getDateStatus(dataStr) {
+      if (!dataStr) return 'future';
+      
+      // Converte data no formato DD/MM/YYYY para Date
+      const partes = dataStr.split('/');
+      if (partes.length !== 3) return 'future';
+      
+      const dia = parseInt(partes[0]);
+      const mes = parseInt(partes[1]) - 1;
+      const ano = parseInt(partes[2]);
+      
+      const dataEvento = new Date(ano, mes, dia);
+      const hoje = new Date();
+      hoje.setHours(0, 0, 0, 0);
+      
+      // Calcula diferença em dias
+      const diffTime = dataEvento.getTime() - hoje.getTime();
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
+      if (diffDays < 0) {
+        return 'passed'; // Data já passou
+      } else if (diffDays <= 3) {
+        return 'warning'; // Hoje ou até 3 dias
+      } else {
+        return 'future'; // Mais de 3 dias
+      }
+    }
+
     // ===================== RENDERIZAÇÃO =====================
     function renderCalendar(data) {
       if (!data || data.length === 0) {
-        calendarContainer.innerHTML = `<div class="empty-state"><i class="fas fa-calendar-plus"></i><p>Nenhum dado carregado. Clique em "Carregar Dados" ou "Carregar Exemplo".</p></div>`;
+        calendarContainer.innerHTML = `<div class="empty-state"><i class="fas fa-calendar-plus"></i><p>Nenhum dado carregado. Clique em "Carregar Dados".</p></div>`;
         return;
       }
+      
       let html = '';
       data.forEach((row, index) => {
         const dataStr = row[0] || '';
@@ -655,13 +739,36 @@
         const ideia = row[5] || '';
         const formato = row[6] || '';
         const titulo = objetivo || tema || 'Atividade';
+        
+        // Determina a classe de status
+        const status = getDateStatus(dataStr);
+        let statusClass = '';
+        let statusLabel = '';
+        
+        if (status === 'passed') {
+          statusClass = 'status-passed';
+          statusLabel = '🔴 Passado';
+        } else if (status === 'warning') {
+          statusClass = 'status-warning';
+          statusLabel = '🟡 Em breve';
+        } else {
+          statusClass = 'status-future';
+          statusLabel = '🟢 Futuro';
+        }
+        
         html += `
-          <div class="card-item" data-index="${index}">
-            <div class="card-date">${dataStr} <span class="weekday">${dia}</span></div>
+          <div class="card-item ${statusClass}" data-index="${index}">
+            <div class="card-date">
+              ${dataStr} 
+              <span class="weekday">${dia}</span>
+            </div>
             <div class="card-title">${titulo}</div>
             <div style="display:flex; gap: 6px; flex-wrap: wrap; margin: 6px 0 2px;">
               <span class="badge-fase">${fase}</span>
               <span class="card-tema">${tema}</span>
+            </div>
+            <div style="font-size:0.7rem; color:#64748b; margin-top:4px;">
+              <span class="status-indicator ${status}"></span> ${statusLabel}
             </div>
             <div class="card-meta">
               <span><i class="far fa-file-alt"></i> ${formato}</span>
@@ -749,11 +856,6 @@
 
     // ===================== CARREGAR DO GOOGLE SHEETS =====================
     function loadFromGoogleSheets() {
-      if (!SCRIPT_URL || SCRIPT_URL === 'https://script.google.com/macros/s/SEU_ID_AQUI/exec') {
-        updateStatus('⚠️ Configure a URL do Google Apps Script no código!', 'error');
-        return;
-      }
-
       updateStatus('Buscando dados do Google Sheets...', 'loading');
       
       fetch(SCRIPT_URL)
@@ -774,7 +876,7 @@
             throw new Error('Dados do calendário vazios ou inválidos');
           }
           
-          loadFullData(calendario, regras || sampleData.regras, guia || sampleData.guia);
+          loadFullData(calendario, regras || [], guia || []);
         })
         .catch(error => {
           console.error('Erro:', error);
@@ -782,29 +884,12 @@
         });
     }
 
-    // ===================== CARREGAR EXEMPLO =====================
-    function loadSample() {
-      const cal = sampleData.calendario;
-      const rules = sampleData.regras;
-      const guide = sampleData.guia;
-      loadFullData(cal, rules, guide);
-      updateStatus('Dados de exemplo carregados!', 'success');
-    }
-
     // ===================== BOTÕES =====================
     document.getElementById('loadDataBtn').addEventListener('click', loadFromGoogleSheets);
-    document.getElementById('loadSampleBtn').addEventListener('click', loadSample);
 
     // ===================== INICIALIZAÇÃO =====================
-    // Mostra instruções iniciais
     console.log('✅ Calendário Chico Guarnieri carregado!');
-    console.log('📌 Para usar com Google Sheets:');
-    console.log('1. Publique o script como Web App (Implantar > Novo deployment)');
-    console.log('2. Copie a URL e cole na variável SCRIPT_URL no HTML');
-    console.log('3. A planilha deve ter 3 abas: "Calendário", "Datas e regras do TSE", "Guia de tom e vocabulário"');
-    
-    // Carrega exemplo automaticamente ao iniciar
-    loadSample();
+    console.log('📌 URL do Google Apps Script:', SCRIPT_URL);
   })();
 </script>
 </body>
