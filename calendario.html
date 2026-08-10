@@ -291,14 +291,24 @@
 
     // ===================== FUNÇÃO DE FETCH COM CORS =====================
     function fetchWithCors(url, options = {}) {
-      return fetch(url, {
-        ...options,
-        mode: 'cors',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(options.headers || {})
-        }
-      });
+      const isPost = options.method && options.method.toUpperCase() === 'POST';
+      const customHeaders = { ...(options.headers || {}) };
+
+      // O Google Apps Script sofre com erro de CORS se enviarmos 'application/json'.
+      // Usar 'text/plain' evita a requisição preflight (OPTIONS) e resolve o problema perfeitamente.
+      if (isPost) {
+        customHeaders['Content-Type'] = 'text/plain;charset=utf-8';
+      }
+
+      const fetchOptions = {
+        ...options
+      };
+
+      if (Object.keys(customHeaders).length > 0) {
+        fetchOptions.headers = customHeaders;
+      }
+
+      return fetch(url, fetchOptions);
     }
 
     // ===================== LOGIN =====================
@@ -536,7 +546,7 @@
         else if (status === 'warning') { statusClass = 'status-warning'; statusLabel = 'Em breve'; statusIcon = '🟡'; }
         else { statusClass = 'status-future'; statusLabel = 'Futuro'; statusIcon = '🟢'; }
 
-        const isConcluido = concluidoPor && concluidoPor.length > 0;
+        const isConcluido = concluidoPor && String(concluidoPor).length > 0;
         const concluidoClass = isConcluido ? 'concluido' : '';
 
         html += `
