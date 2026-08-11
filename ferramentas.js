@@ -13,7 +13,7 @@ const ferramentasGabinete = [
         icone: "fas fa-image",
         arquivo: "gerador.html",
         novaFuncao: false,
-        descricao: "Crie artes padronizadas para notícias rapidamente. Formatos otimizados para Feed e Stories."
+        descricao: "Crie artes padronizadas para redes sociais rapidamente. Formatos otimizados para Feed e Stories."
     },
     {
         id: "transcritor",
@@ -24,7 +24,6 @@ const ferramentasGabinete = [
         descricao: "Transcrição avançada de áudio e vídeo com mapeamento de contexto e separação de vozes."
     },
     {
-        // NOVO MÓDULO ADICIONADO AQUI
         id: "roteiro",
         nome: "Roteiro de Filmagens",
         icone: "fas fa-video",
@@ -33,10 +32,9 @@ const ferramentasGabinete = [
         descricao: "Gerador inteligente de roteiros de captação com sugestões de enquadramento e referências visuais em IA."
     },
      {
-        // NOVO MÓDULO ADICIONADO AQUI
         id: "calendario",
         nome: "Calendário 247",
-        icone: "fas fa-video",
+        icone: "fas fa-calendar-alt", /* Atualizado o icone para fazer sentido com o calendário */
         arquivo: "calendario.html",
         novaFuncao: true,
         descricao: "Calendário de publicações e orientações para campanha"
