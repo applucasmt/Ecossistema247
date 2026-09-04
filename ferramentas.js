@@ -34,7 +34,7 @@ const ferramentasGabinete = [
      {
         id: "calendario",
         nome: "Calendário 247",
-        icone: "fas fa-calendar-alt", /* Atualizado o icone para fazer sentido com o calendário */
+        icone: "fas fa-calendar-alt",
         arquivo: "calendario.html",
         novaFuncao: true,
         descricao: "Calendário de publicações e orientações para campanha"
@@ -46,4 +46,5 @@ const ferramentasGabinete = [
         arquivo: "agenda.html",
         novaFuncao: true,
         descricao: "Crie artes padronizadas para agenda do Deputado Chico Guarnieri."
-    };
+    }
+];
