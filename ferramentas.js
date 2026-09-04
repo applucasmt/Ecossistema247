@@ -40,3 +40,12 @@ const ferramentasGabinete = [
         descricao: "Calendário de publicações e orientações para campanha"
     }
 ];
+ {
+        id: "agenda",
+        nome: "Agenda Deputado",
+        icone: "fas fa-calendar-alt", /* Atualizado o icone para fazer sentido com o calendário */
+        arquivo: "agenda.html",
+        novaFuncao: true,
+        descricao: "Agenda do deputado Chico Guarnieri"
+    }
+];
