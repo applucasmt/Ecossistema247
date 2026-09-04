@@ -40,5 +40,3 @@ const ferramentasGabinete = [
         descricao: "Calendário de publicações e orientações para campanha"
     }
 ];
-
-];
