@@ -38,9 +38,8 @@ const ferramentasGabinete = [
         arquivo: "calendario.html",
         novaFuncao: true,
         descricao: "Calendário de publicações e orientações para campanha"
-    }
-],
-{
+    },
+     {
         id: "agenda",
         nome: "Agenda Deputado",
         icone: "fas fa-image",
