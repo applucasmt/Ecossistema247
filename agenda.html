@@ -1,311 +1,712 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gerador de Agenda Parlamentar</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Agenda - Deputado</title>
+    <style>
+        /* ===== ESTILOS GERAIS ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f0f2f5;
-      padding: 20px;
-    }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a2e;
+            padding: 30px 20px;
+            min-height: 100vh;
+        }
 
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-    }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
 
-    h1 {
-      color: #1a3a7a;
-      text-align: center;
-      margin-bottom: 30px;
-      font-size: 28px;
-    }
+        h1 {
+            color: #fff;
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+        }
 
-    .controles {
-      background: white;
-      padding: 24px 30px;
-      border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-      display: flex;
-      flex-wrap: wrap;
-      align-items: flex-end;
-      gap: 18px;
-      margin-bottom: 30px;
-    }
+        h1 span {
+            color: #f5c842;
+        }
 
-    .grupo {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      flex: 1 0 140px;
-    }
+        /* ===== CONTROLES ===== */
+        .controles {
+            background: #16213e;
+            padding: 25px 30px;
+            border-radius: 16px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            gap: 15px;
+            margin-bottom: 30px;
+            border: 1px solid #0f3460;
+        }
 
-    .grupo label {
-      font-size: 13px;
-      font-weight: 600;
-      color: #333;
-    }
+        .grupo {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            flex: 1 0 140px;
+        }
 
-    .grupo input {
-      padding: 8px 12px;
-      border: 1.5px solid #d0d7de;
-      border-radius: 8px;
-      font-size: 14px;
-      transition: border-color 0.2s;
-    }
+        .grupo label {
+            color: #aaccee;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
-    .grupo input:focus {
-      border-color: #1a3a7a;
-      outline: none;
-    }
+        .grupo input {
+            padding: 10px 14px;
+            border: 2px solid #0f3460;
+            border-radius: 10px;
+            background: #0a0a1a;
+            color: #fff;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
 
-    .grupo input[type="number"] {
-      max-width: 80px;
-    }
+        .grupo input:focus {
+            border-color: #f5c842;
+            outline: none;
+            box-shadow: 0 0 15px rgba(245, 200, 66, 0.2);
+        }
 
-    .controles button {
-      padding: 10px 24px;
-      border: none;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 15px;
-      cursor: pointer;
-      transition: all 0.2s;
-      background: #1a3a7a;
-      color: white;
-    }
+        .grupo input::placeholder {
+            color: #666;
+        }
 
-    .controles button:hover {
-      background: #2a5a9a;
-      transform: translateY(-1px);
-    }
+        .btn-adicionar {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f5c842;
+            color: #1a1a2e;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-    .controles button:last-child {
-      background: #2d8a4e;
-    }
+        .btn-adicionar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(245, 200, 66, 0.4);
+        }
 
-    .controles button:last-child:hover {
-      background: #3a9a5e;
-    }
+        .btn-exportar {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #00b894;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-    #preview {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 30px;
-      justify-content: center;
-    }
+        .btn-exportar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(0, 184, 148, 0.4);
+        }
 
-    .item-agenda {
-      background: white;
-      padding: 12px;
-      border-radius: 12px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-      transition: transform 0.2s;
-    }
+        .btn-limpar {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #e74c3c;
+            color: #fff;
+        }
 
-    .item-agenda:hover {
-      transform: scale(1.02);
-    }
+        .btn-limpar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(231, 76, 60, 0.4);
+        }
 
-    .item-agenda svg {
-      width: 100%;
-      height: auto;
-      max-width: 320px;
-      display: block;
-    }
+        /* ===== ÁREA DAS AGENDAS ===== */
+        #agendas {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: center;
+        }
 
-    /* Responsivo */
-    @media (max-width: 768px) {
-      .controles {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      .grupo {
-        flex: 1 1 auto;
-      }
-      .controles button {
-        width: 100%;
-      }
-    }
-  </style>
+        /* ===== CARD DA AGENDA ===== */
+        .agenda-card {
+            background: #fff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            width: 450px;
+            min-width: 350px;
+            flex: 1 0 auto;
+            max-width: 500px;
+            transition: transform 0.3s;
+            position: relative;
+        }
+
+        .agenda-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .agenda-card .card-header {
+            background: linear-gradient(135deg, #1a3a7a, #0a1a3a);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .agenda-card .card-header .titulo {
+            color: #f5c842;
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .agenda-card .card-header .numero {
+            color: #fff;
+            font-size: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        .agenda-card .card-body {
+            padding: 20px 24px 24px;
+        }
+
+        /* Nome do Deputado */
+        .agenda-card .nome-deputado {
+            font-size: 28px;
+            font-weight: 800;
+            color: #1a3a7a;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .agenda-card .nome-deputado input {
+            font-size: 28px;
+            font-weight: 800;
+            color: #1a3a7a;
+            border: none;
+            border-bottom: 2px dashed #ccc;
+            background: transparent;
+            width: 100%;
+            text-transform: uppercase;
+            padding: 4px 0;
+        }
+
+        .agenda-card .nome-deputado input:focus {
+            border-bottom-color: #f5c842;
+            outline: none;
+        }
+
+        /* Linha Partido + UF */
+        .agenda-card .linha-partido {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .agenda-card .linha-partido .partido {
+            background: #1a3a7a;
+            color: #fff;
+            padding: 2px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .agenda-card .linha-partido .partido input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-weight: 700;
+            font-size: 14px;
+            width: 60px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .agenda-card .linha-partido .partido input:focus {
+            outline: none;
+        }
+
+        .agenda-card .linha-partido .uf {
+            background: #e74c3c;
+            color: #fff;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .agenda-card .linha-partido .uf input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-weight: 700;
+            font-size: 14px;
+            width: 30px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .agenda-card .linha-partido .uf input:focus {
+            outline: none;
+        }
+
+        /* Data + Hora */
+        .agenda-card .data-hora {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+            background: #f0f4ff;
+            padding: 8px 14px;
+            border-radius: 10px;
+        }
+
+        .agenda-card .data-hora .dia-semana {
+            font-weight: 700;
+            color: #1a3a7a;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+
+        .agenda-card .data-hora input {
+            border: none;
+            background: transparent;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            padding: 4px 8px;
+            border-radius: 6px;
+            flex: 1;
+        }
+
+        .agenda-card .data-hora input:focus {
+            outline: 2px solid #f5c842;
+        }
+
+        .agenda-card .data-hora .hora {
+            font-weight: 700;
+            color: #1a3a7a;
+            font-size: 16px;
+        }
+
+        .agenda-card .data-hora .hora input {
+            width: 60px;
+            text-align: center;
+        }
+
+        /* Título do Evento */
+        .agenda-card .titulo-evento {
+            font-size: 20px;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 12px;
+            padding: 6px 0;
+            border-bottom: 2px solid #f0f4ff;
+        }
+
+        .agenda-card .titulo-evento input {
+            font-size: 20px;
+            font-weight: 700;
+            color: #222;
+            border: none;
+            background: transparent;
+            width: 100%;
+            padding: 4px 0;
+        }
+
+        .agenda-card .titulo-evento input:focus {
+            outline: 2px solid #f5c842;
+            border-radius: 4px;
+        }
+
+        /* Rodapé do card */
+        .agenda-card .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 12px;
+            border-top: 2px solid #f0f4ff;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .agenda-card .card-footer .info-deputado {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .agenda-card .card-footer .info-deputado input {
+            border: none;
+            background: transparent;
+            font-size: 13px;
+            color: #666;
+            padding: 2px 6px;
+            border-bottom: 1px dashed #ccc;
+        }
+
+        .agenda-card .card-footer .info-deputado input:focus {
+            border-bottom-color: #f5c842;
+            outline: none;
+        }
+
+        .agenda-card .card-footer .numero-vereador {
+            font-weight: 700;
+            color: #1a3a7a;
+            font-size: 18px;
+        }
+
+        .agenda-card .card-footer .numero-vereador input {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a3a7a;
+            border: none;
+            background: transparent;
+            width: 50px;
+            text-align: center;
+        }
+
+        .agenda-card .card-footer .numero-vereador input:focus {
+            outline: 2px solid #f5c842;
+            border-radius: 4px;
+        }
+
+        /* Botão remover */
+        .btn-remover {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: #e74c3c;
+            color: #fff;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 10px rgba(231, 76, 60, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-remover:hover {
+            transform: scale(1.1);
+        }
+
+        /* ===== CONTADOR ===== */
+        .contador {
+            color: #aaccee;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .contador span {
+            color: #f5c842;
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        /* ===== RESPONSIVO ===== */
+        @media (max-width: 600px) {
+            .agenda-card {
+                width: 100%;
+                min-width: unset;
+                max-width: 100%;
+            }
+
+            .controles {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .grupo {
+                flex: 1 1 auto;
+            }
+
+            .controles button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>📅 Gerador de Agenda Parlamentar</h1>
-    
-    <div class="controles">
-      <div class="grupo">
-        <label>Nome do Deputado:</label>
-        <input type="text" id="nome" value="Dr. João Silva" placeholder="Nome completo">
-      </div>
-      <div class="grupo">
-        <label>Partido:</label>
-        <input type="text" id="partido" value="PDT" placeholder="Partido">
-      </div>
-      <div class="grupo">
-        <label>UF:</label>
-        <input type="text" id="uf" value="SP" placeholder="UF" maxlength="2">
-      </div>
-      <div class="grupo">
-        <label>Data Inicial:</label>
-        <input type="date" id="dataInicial" value="2026-09-01">
-      </div>
-      <div class="grupo">
-        <label>Local:</label>
-        <input type="text" id="localBase" value="Câmara Municipal" placeholder="Local">
-      </div>
-      <div class="grupo">
-        <label>Evento:</label>
-        <input type="text" id="eventoBase" value="Reunião com lideranças" placeholder="Evento">
-      </div>
-      <div class="grupo">
-        <label>Quantidade de dias:</label>
-        <input type="number" id="qtdeDias" value="3" min="1" max="20">
-      </div>
-      <button onclick="gerarAgenda()">🔄 Gerar Agenda</button>
-      <button onclick="baixarSVG()">⬇ Baixar SVG</button>
+    <div class="container">
+        <h1>📅 <span>AGENDA</span> PARLAMENTAR</h1>
+
+        <!-- ===== CONTROLES ===== -->
+        <div class="controles">
+            <div class="grupo">
+                <label>Nome do Deputado</label>
+                <input type="text" id="nomePadrao" value="CHICO GUARNIERI" placeholder="Nome do Deputado">
+            </div>
+            <div class="grupo">
+                <label>Partido</label>
+                <input type="text" id="partidoPadrao" value="PSDB" placeholder="Partido">
+            </div>
+            <div class="grupo">
+                <label>UF</label>
+                <input type="text" id="ufPadrao" value="SP" placeholder="UF" maxlength="2">
+            </div>
+            <div class="grupo">
+                <label>Data</label>
+                <input type="date" id="dataPadrao" value="2026-09-04">
+            </div>
+            <div class="grupo">
+                <label>Hora</label>
+                <input type="time" id="horaPadrao" value="08:00">
+            </div>
+            <div class="grupo">
+                <label>Evento</label>
+                <input type="text" id="eventoPadrao" value="REUNIÃO COM LIDERANÇAS" placeholder="Título do evento">
+            </div>
+            <div class="grupo">
+                <label>Número</label>
+                <input type="text" id="numeroPadrao" value="45678" placeholder="Número">
+            </div>
+            <button class="btn-adicionar" onclick="adicionarAgenda()">➕ ADICIONAR</button>
+            <button class="btn-exportar" onclick="exportarSVG()">⬇ EXPORTAR SVG</button>
+            <button class="btn-limpar" onclick="limparTudo()">🗑 LIMPAR</button>
+        </div>
+
+        <!-- ===== ÁREA DAS AGENDAS ===== -->
+        <div id="agendas"></div>
+
+        <div class="contador">
+            Total de agendas: <span id="totalAgendas">0</span>
+        </div>
     </div>
 
-    <div id="preview"></div>
-  </div>
+    <script>
+        // ===== VARIÁVEIS =====
+        let contadorAgendas = 0;
 
-  <script>
-    // ===== TEMPLATE SVG BASE =====
-    const TEMPLATE_SVG = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="4084.35" height="7261.07" viewBox="0 0 4084.35 7261.07">
-      <!-- Fundo -->
-      <rect width="4084.35" height="7261.07" fill="#f5f0e8" rx="20"/>
-      <rect x="20" y="20" width="4044.35" height="7221.07" fill="none" stroke="#1a3a7a" stroke-width="8" rx="12"/>
-      
-      <!-- Cabeçalho -->
-      <rect x="40" y="40" width="4004.35" height="600" fill="#1a3a7a" rx="8"/>
-      <text x="2042" y="180" text-anchor="middle" font-size="80" font-weight="bold" fill="white">AGENDA PARLAMENTAR</text>
-      <text x="2042" y="300" text-anchor="middle" font-size="40" fill="#aaccee">Compromissos do Gabinete</text>
-      
-      <!-- Linha decorativa -->
-      <line x1="200" y1="370" x2="3884" y2="370" stroke="#aaccee" stroke-width="2"/>
-      
-      <!-- Nome do Deputado -->
-      <rect x="40" y="420" width="4004.35" height="160" fill="#e8edf5" rx="8"/>
-      <text x="2042" y="530" text-anchor="middle" font-size="72" font-weight="bold" fill="#1a3a7a">{{NOME}}</text>
-      
-      <!-- Partido / UF -->
-      <rect x="40" y="600" width="4004.35" height="100" fill="#d0d8e8" rx="8"/>
-      <text x="2042" y="670" text-anchor="middle" font-size="44" font-weight="bold" fill="#1a3a7a">{{PARTIDO}} - {{UF}}</text>
+        // ===== FUNÇÃO PARA ADICIONAR AGENDA =====
+        function adicionarAgenda() {
+            contadorAgendas++;
 
-      <!-- Área do Conteúdo -->
-      <rect x="40" y="740" width="4004.35" height="6200" fill="white" rx="8"/>
-      
-      <!-- Título da seção -->
-      <text x="2042" y="850" text-anchor="middle" font-size="56" font-weight="bold" fill="#1a3a7a">📋 COMPROMISSO DO DIA</text>
-      <line x1="400" y1="880" x2="3684" y2="880" stroke="#1a3a7a" stroke-width="3"/>
-      
-      <!-- DATA -->
-      <rect x="80" y="920" width="3924.35" height="160" fill="#f0f4ff" rx="12" stroke="#1a3a7a" stroke-width="2"/>
-      <text x="140" y="1030" font-size="52" font-weight="bold" fill="#1a3a7a">📅 DATA:</text>
-      <text x="420" y="1030" font-size="52" fill="#222">{{DATA}}</text>
+            const nome = document.getElementById('nomePadrao').value || 'DEPUTADO';
+            const partido = document.getElementById('partidoPadrao').value || 'PARTIDO';
+            const uf = document.getElementById('ufPadrao').value || 'UF';
+            const dataInput = document.getElementById('dataPadrao').value;
+            const hora = document.getElementById('horaPadrao').value || '08:00';
+            const evento = document.getElementById('eventoPadrao').value || 'EVENTO';
+            const numero = document.getElementById('numeroPadrao').value || '00000';
 
-      <!-- LOCAL -->
-      <rect x="80" y="1120" width="3924.35" height="160" fill="#fafcff" rx="12" stroke="#1a3a7a" stroke-width="2"/>
-      <text x="140" y="1230" font-size="52" font-weight="bold" fill="#1a3a7a">📍 LOCAL:</text>
-      <text x="520" y="1230" font-size="52" fill="#222">{{LOCAL}}</text>
+            // Formata a data
+            let dataFormatada = '';
+            let diaSemana = '';
+            if (dataInput) {
+                const data = new Date(dataInput + 'T00:00:00');
+                const dias = ['DOMINGO', 'SEGUNDA', 'TERÇA', 'QUARTA', 'QUINTA', 'SEXTA', 'SÁBADO'];
+                diaSemana = dias[data.getDay()];
+                dataFormatada = data.toLocaleDateString('pt-BR', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                });
+            }
 
-      <!-- EVENTO -->
-      <rect x="80" y="1320" width="3924.35" height="160" fill="#f0f4ff" rx="12" stroke="#1a3a7a" stroke-width="2"/>
-      <text x="140" y="1430" font-size="52" font-weight="bold" fill="#1a3a7a">📌 EVENTO:</text>
-      <text x="580" y="1430" font-size="52" fill="#222">{{EVENTO}}</text>
+            // Cria o card
+            const container = document.getElementById('agendas');
+            const card = document.createElement('div');
+            card.className = 'agenda-card';
+            card.id = `agenda-${contadorAgendas}`;
+            card.innerHTML = `
+                <button class="btn-remover" onclick="removerAgenda('${card.id}')">✕</button>
+                <div class="card-header">
+                    <span class="titulo">📋 AGENDA</span>
+                    <span class="numero">#${String(contadorAgendas).padStart(3, '0')}</span>
+                </div>
+                <div class="card-body">
+                    <!-- Nome -->
+                    <div class="nome-deputado">
+                        <input type="text" value="${nome.toUpperCase()}" placeholder="Nome do Deputado">
+                    </div>
 
-      <!-- Observações -->
-      <rect x="80" y="1520" width="3924.35" height="120" fill="#fafcff" rx="12" stroke="#1a3a7a" stroke-width="2" stroke-dasharray="8,4"/>
-      <text x="140" y="1590" font-size="40" fill="#666">Observações: _________________________</text>
+                    <!-- Partido + UF -->
+                    <div class="linha-partido">
+                        <div class="partido">
+                            <input type="text" value="${partido.toUpperCase()}" placeholder="PARTIDO" style="width:60px;">
+                        </div>
+                        <div class="uf">
+                            <input type="text" value="${uf.toUpperCase()}" placeholder="UF" style="width:30px;" maxlength="2">
+                        </div>
+                    </div>
 
-      <!-- Rodapé -->
-      <rect x="40" y="7000" width="4004.35" height="220" fill="#1a3a7a" rx="8"/>
-      <text x="2042" y="7080" text-anchor="middle" font-size="40" fill="white">📞 Gabinete do Deputado - (11) 9999-9999</text>
-      <text x="2042" y="7160" text-anchor="middle" font-size="32" fill="#aaccee">contato@deputado.com.br | @deputado_oficial</text>
-    </svg>`;
+                    <!-- Data + Hora -->
+                    <div class="data-hora">
+                        <span class="dia-semana">${diaSemana || 'DATA'}</span>
+                        <input type="text" value="${dataFormatada || '00/00/0000'}" placeholder="00/00/0000">
+                        <span class="hora">⏰</span>
+                        <input type="time" value="${hora}" style="width:80px;">
+                    </div>
 
-    // ===== FUNÇÃO GERAR AGENDA =====
-    function gerarAgenda() {
-      const nome = document.getElementById('nome').value || 'Deputado';
-      const partido = document.getElementById('partido').value || 'PARTIDO';
-      const uf = document.getElementById('uf').value || 'UF';
-      const dataInicial = new Date(document.getElementById('dataInicial').value || '2026-09-01');
-      const localBase = document.getElementById('localBase').value || 'Câmara Municipal';
-      const eventoBase = document.getElementById('eventoBase').value || 'Reunião';
-      const qtde = parseInt(document.getElementById('qtdeDias').value) || 1;
+                    <!-- Evento -->
+                    <div class="titulo-evento">
+                        <input type="text" value="${evento.toUpperCase()}" placeholder="TÍTULO DO EVENTO">
+                    </div>
 
-      const preview = document.getElementById('preview');
-      preview.innerHTML = '';
+                    <!-- Rodapé -->
+                    <div class="card-footer">
+                        <div class="info-deputado">
+                            <span>👤</span>
+                            <input type="text" value="${nome.toUpperCase()}" placeholder="Deputado" style="width:120px;">
+                        </div>
+                        <div class="numero-vereador">
+                            <span>🏛</span>
+                            <input type="text" value="${numero}" placeholder="00000" style="width:60px;">
+                        </div>
+                    </div>
+                </div>
+            `;
 
-      for (let i = 0; i < qtde; i++) {
-        // Calcula a data
-        const dataAtual = new Date(dataInicial);
-        dataAtual.setDate(dataAtual.getDate() + i);
-        
-        // Dias da semana em português
-        const diasSemana = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
-        const diaSemana = diasSemana[dataAtual.getDay()];
-        
-        const dataFormatada = `${diaSemana}, ${dataAtual.toLocaleDateString('pt-BR', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric'
-        })}`;
+            container.appendChild(card);
+            atualizarContador();
+        }
 
-        const local = `${localBase} - Sala ${i+1}`;
-        const evento = `${eventoBase} - Pauta ${i+1}`;
+        // ===== FUNÇÃO PARA REMOVER AGENDA =====
+        function removerAgenda(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.style.transform = 'scale(0.8)';
+                element.style.opacity = '0';
+                setTimeout(() => {
+                    element.remove();
+                    atualizarContador();
+                }, 300);
+            }
+        }
 
-        let svg = TEMPLATE_SVG
-          .replace(/{{NOME}}/g, nome.toUpperCase())
-          .replace(/{{PARTIDO}}/g, partido.toUpperCase())
-          .replace(/{{UF}}/g, uf.toUpperCase())
-          .replace(/{{DATA}}/g, dataFormatada)
-          .replace(/{{LOCAL}}/g, local)
-          .replace(/{{EVENTO}}/g, evento);
+        // ===== FUNÇÃO PARA LIMPAR TUDO =====
+        function limparTudo() {
+            if (confirm('Tem certeza que deseja limpar todas as agendas?')) {
+                document.getElementById('agendas').innerHTML = '';
+                contadorAgendas = 0;
+                atualizarContador();
+            }
+        }
 
-        // Cria o card
-        const div = document.createElement('div');
-        div.className = 'item-agenda';
-        div.innerHTML = svg;
-        preview.appendChild(div);
-      }
-    }
+        // ===== ATUALIZAR CONTADOR =====
+        function atualizarContador() {
+            const total = document.querySelectorAll('.agenda-card').length;
+            document.getElementById('totalAgendas').textContent = total;
+        }
 
-    // ===== FUNÇÃO BAIXAR SVG =====
-    function baixarSVG() {
-      const items = document.querySelectorAll('.item-agenda');
-      if (!items.length) {
-        alert('Gere a agenda primeiro!');
-        return;
-      }
+        // ===== EXPORTAR COMO SVG =====
+        function exportarSVG() {
+            const cards = document.querySelectorAll('.agenda-card');
+            if (!cards.length) {
+                alert('Adicione pelo menos uma agenda primeiro!');
+                return;
+            }
 
-      // Pega todos os SVGs e junta em um só
-      let svgCompleto = `<svg xmlns="http://www.w3.org/2000/svg" width="${4084.35 * items.length}" height="7261.07" viewBox="0 0 ${4084.35 * items.length} 7261.07">`;
-      items.forEach((el, idx) => {
-        const svgContent = el.querySelector('svg').innerHTML;
-        svgCompleto += `<g transform="translate(${idx * 4084.35}, 0)">${svgContent}</g>`;
-      });
-      svgCompleto += '</svg>';
+            let svgCompleto = `<svg xmlns="http://www.w3.org/2000/svg" width="${550 * cards.length}" height="380" viewBox="0 0 ${550 * cards.length} 380">`;
 
-      // Cria link para download
-      const blob = new Blob([svgCompleto], { type: 'image/svg+xml' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = `agenda_deputado_${new Date().toISOString().slice(0,10)}.svg`;
-      link.click();
-    }
+            cards.forEach((card, index) => {
+                // Pega todos os inputs e textos do card
+                const nome = card.querySelector('.nome-deputado input')?.value || 'DEPUTADO';
+                const partido = card.querySelector('.partido input')?.value || 'PARTIDO';
+                const uf = card.querySelector('.uf input')?.value || 'UF';
+                const data = card.querySelector('.data-hora input[type="text"]')?.value || '00/00/0000';
+                const diaSemana = card.querySelector('.dia-semana')?.textContent || 'DATA';
+                const hora = card.querySelector('.data-hora input[type="time"]')?.value || '08:00';
+                const evento = card.querySelector('.titulo-evento input')?.value || 'EVENTO';
+                const deputadoFooter = card.querySelector('.card-footer .info-deputado input')?.value || 'DEPUTADO';
+                const numero = card.querySelector('.numero-vereador input')?.value || '00000';
 
-    // ===== GERA AUTOMATICAMENTE AO CARREGAR =====
-    window.onload = gerarAgenda;
-  </script>
+                // Converte para SVG
+                const svgCard = `
+                    <g transform="translate(${index * 550}, 0)">
+                        <rect width="530" height="360" fill="#ffffff" rx="16" stroke="#1a3a7a" stroke-width="3"/>
+                        
+                        <!-- Header -->
+                        <rect width="530" height="60" fill="#1a3a7a" rx="16"/>
+                        <rect y="30" width="530" height="30" fill="#1a3a7a"/>
+                        <text x="20" y="40" font-family="Arial" font-size="16" font-weight="bold" fill="#f5c842">📋 AGENDA</text>
+                        <text x="490" y="40" font-family="Arial" font-size="12" fill="#fff" text-anchor="end">#${String(index + 1).padStart(3, '0')}</text>
+                        
+                        <!-- Nome -->
+                        <text x="25" y="100" font-family="Arial" font-size="28" font-weight="bold" fill="#1a3a7a">${nome.toUpperCase()}</text>
+                        
+                        <!-- Partido + UF -->
+                        <rect x="25" y="112" width="80" height="26" fill="#1a3a7a" rx="13"/>
+                        <text x="65" y="130" font-family="Arial" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">${partido.toUpperCase()}</text>
+                        
+                        <rect x="115" y="112" width="40" height="26" fill="#e74c3c" rx="13"/>
+                        <text x="135" y="130" font-family="Arial" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">${uf.toUpperCase()}</text>
+                        
+                        <!-- Data + Hora -->
+                        <rect x="25" y="150" width="480" height="40" fill="#f0f4ff" rx="8"/>
+                        <text x="40" y="175" font-family="Arial" font-size="16" font-weight="bold" fill="#1a3a7a">${diaSemana}</text>
+                        <text x="200" y="175" font-family="Arial" font-size="16" fill="#333">${data}</text>
+                        <text x="370" y="175" font-family="Arial" font-size="16" font-weight="bold" fill="#1a3a7a">⏰ ${hora}</text>
+                        
+                        <!-- Evento -->
+                        <text x="25" y="225" font-family="Arial" font-size="20" font-weight="bold" fill="#222">${evento.toUpperCase()}</text>
+                        <line x1="25" y1="238" x2="505" y2="238" stroke="#f0f4ff" stroke-width="2"/>
+                        
+                        <!-- Footer -->
+                        <text x="25" y="270" font-family="Arial" font-size="14" fill="#666">👤 ${deputadoFooter.toUpperCase()}</text>
+                        <text x="400" y="270" font-family="Arial" font-size="18" font-weight="bold" fill="#1a3a7a">🏛 ${numero}</text>
+                        
+                        <!-- Linha final -->
+                        <line x1="25" y1="285" x2="505" y2="285" stroke="#f0f4ff" stroke-width="2"/>
+                    </g>
+                `;
+                svgCompleto += svgCard;
+            });
+
+            svgCompleto += '</svg>';
+
+            // Download
+            const blob = new Blob([svgCompleto], { type: 'image/svg+xml' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `agendas_deputado_${new Date().toISOString().slice(0, 10)}.svg`;
+            link.click();
+        }
+
+        // ===== ADICIONAR AGENDAS INICIAIS =====
+        window.onload = function() {
+            // Adiciona 3 agendas de exemplo
+            for (let i = 0; i < 3; i++) {
+                adicionarAgenda();
+            }
+        };
+    </script>
 </body>
 </html>
